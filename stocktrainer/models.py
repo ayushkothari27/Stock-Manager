@@ -44,7 +44,7 @@ class Transaction(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     balance = models.FloatField(default=50000)
-    starting_money = models.FloatField(blank=True)
+    starting_money = models.FloatField(blank=True, default=0.0)
     def __str__(self):
         return self.user.first_name
 

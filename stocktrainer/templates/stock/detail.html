@@ -191,7 +191,6 @@
                         <div class="pl-lg-4">
                             <canvas id="myChart" style="height:500px;"></canvas>
                             <!-- <div class="row">
->>>>>>> 4eb555ee83d08cac3277acc10051739d5c1eff16
                     <div class="col-md-12">
                       <div class="form-group">
                         <label class="form-control-label" for="input-address">Address</label>
@@ -240,7 +239,6 @@
                     <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
                   </div>
                 </div> -->
-<<<<<<< HEAD
               </form>
             </div>
           </div>
@@ -269,14 +267,11 @@
                         </div>
                         <br/>
                         <br/>
-=======
->>>>>>> 4eb555ee83d08cac3277acc10051739d5c1eff16
                     </form>
 
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
         <div class="modal fade" id="sellModal" role="dialog">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -299,49 +294,7 @@
                         <br/>
                         <br/>
                     </form>
-=======
-    </div>
-    <!--Modals-->
-    <div class="modal fade" id="buyModal" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Buy Stocks</h4>
                 </div>
-                <form method='POST'>
-                    {% csrf_token %}
-                    <div class="modal-body">
-                        <input type="text" class="form-control" name="quantity"
-                            placeholder="Enter total Number Of Stocks to Buy:" aria-label="Recipient's username"
-                            aria-describedby="basic-addon2">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" name="buy" class="btn btn-default" data-dismiss="modal">Buy</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="sellModal" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Sell Stocks</h4>
->>>>>>> 4eb555ee83d08cac3277acc10051739d5c1eff16
-                </div>
-                <form method='POST'>
-                    {% csrf_token %}
-                    <div class="modal-body">
-                        <input type="text" class="form-control" name="squantity"
-                            placeholder="Enter total Number Of Stocks to Sell:" aria-label="Recipient's username"
-                            aria-describedby="basic-addon2">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" name="sell" class="btn btn-default" data-dismiss="modal">Sell</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -393,62 +346,6 @@
                 'rgba(255, 206, 86, 1)',
             ],
                 borderWidth: 1
-<<<<<<< HEAD
-            },
-        {
-            label: 'Highest Price',
-                data: { { high } },
-            backgroundColor: [
-                'rgba(255, 255, 255, 0.2)',
-            ],
-                borderColor: [
-                    'rgba(255, 206, 86, 1)',
-                ],
-                    borderWidth: 1
-        },
-        {
-            label: 'Lowest Price',
-                data: { { low } },
-            backgroundColor: [
-                //'rgba(75, 192, 192, 0.2)',
-                //'rgba(153, 102, 255, 0.2)',
-                //'rgba(255, 159, 64, 0.2)'
-                'rgba(255, 255, 255, 0.2)',
-            ],
-                borderColor: [
-                    //'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                    borderWidth: 1
-        }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: false
-                    }
-                }]
-            },
-        }
-    });
-    </script>
-
-    <script>
-        var x = {{ open }}
-        var ctx = document.getElementById("myChart2").getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['"2018-04-03"', '"2018-04-02"', '"2018-03-29"', '"2018-03-28"', '"2018-03-27"', '"2018-03-26"', '"2018-03-23"', '"2018-03-22"', '"2018-03-21"', '"2018-03-20"', '"2018-03-19"', '"2018-03-16"', '"2018-03-15"', '"2018-03-14"', '"2018-03-13"', '"2018-03-12"', '"2018-03-09"', '"2018-03-08"', '"2018-03-07"', '"2018-03-06"', '"2018-03-05"', '"2018-03-02"', '"2018-03-01"', '"2018-02-28"', '"2018-02-27"', '"2018-02-26"', '"2018-02-23"', '"2018-02-22"', '"2018-02-21"', '"2018-02-20"', '"2018-02-16"', '"2018-02-15"', '"2018-02-14"', '"2018-02-13"', '"2018-02-12"', '"2018-02-09"', '"2018-02-08"', '"2018-02-07"', '"2018-02-06"', '"2018-02-05"', '"2018-02-02"', '"2018-02-01"', '"2018-01-31"', '"2018-01-30"', '"2018-01-29"', '"2018-01-26"', '"2018-01-25"', '"2018-01-24"', '"2018-01-23"', '"2018-01-22"', '"2018-01-19"', '"2018-01-18"', '"2018-01-17"', '"2018-01-16"', '"2018-01-12"', '"2018-01-11"', '"2018-01-10"', '"2018-01-09"', '"2018-01-08"', '"2018-01-05"', '"2018-01-04"', '"2018-01-03"', '"2018-01-02"', '"2017-12-29"', '"2017-12-28"', '"2017-12-27"', '"2017-12-26"', '"2017-12-22"', '"2017-12-21"', '"2017-12-20"', '"2017-12-19"', '"2017-12-18"', '"2017-12-15"', '"2017-12-14"', '"2017-12-13"', '"2017-12-12"', '"2017-12-11"', '"2017-12-08"', '"2017-12-07"', '"2017-12-06"', '"2017-12-05"', '"2017-12-04"', '"2017-12-01"', '"2017-11-30"', '"2017-11-29"', '"2017-11-28"', '"2017-11-27"', '"2017-11-24"', '"2017-11-22"', '"2017-11-21"', '"2017-11-20"', '"2017-11-17"', '"2017-11-16"', '"2017-11-15"', '"2017-11-14"', '"2017-11-13"', '"2017-11-10"', '"2017-11-09"', '"2017-11-08"', '"2017-11-07"'],
-                datasets: [{
-                    label: 'Volume Of Data',
-                    data: {{ volume }},
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)'
-            ],
-=======
     },
     {
         label: 'Lowest Price',
@@ -459,7 +356,6 @@
             //'rgba(255, 159, 64, 0.2)'
             'rgba(255, 255, 255, 0.2)',
         ],
->>>>>>> 4eb555ee83d08cac3277acc10051739d5c1eff16
             borderColor: [
                 //'rgba(75, 192, 192, 1)',
                 'rgba(153, 102, 255, 1)',
@@ -478,21 +374,6 @@
         },
     }
     });
-<<<<<<< HEAD
-    </script>
-
-    <script>
-        var ctx = document.getElementById("myChart3").getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {{ vol }},
-        datasets: [{
-            label: 'Price Of Data vs Volume Of Data (in past each minute)',
-            data: {{ ap }},
-            backgroundColor: [
-            'rgba(153, 102, 255, 0.2)',
-=======
 </script>
 
 <script>
@@ -507,7 +388,6 @@
                 data: {{ volume }},
         backgroundColor: [
             'rgba(255, 99, 132, 0.2)'
->>>>>>> 4eb555ee83d08cac3277acc10051739d5c1eff16
         ],
         borderColor: [
             'rgba(255,99,132,1)',
@@ -557,8 +437,4 @@
     });
 </script>
 
-<<<<<<< HEAD
-</html>
-=======
 {% endblock %}
->>>>>>> 4eb555ee83d08cac3277acc10051739d5c1eff16
