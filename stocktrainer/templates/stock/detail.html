@@ -243,9 +243,9 @@
       <div class="container-fluid d-flex align-items-center">
         <div class="row">
           <div class="col-lg-12 col-md-10">
-            <h1 class="display-2 text-white">{{stock.name}}</h1>
-            <h3 class="display-4 text-white">{{stock.symbol}}</h3>
-            <p class="text-white mt-0 mb-5"><a href="{{stock.website}}">{{stock.website}}</a><br> {{stock.industry}}<br>{{stock.sector}}</p>
+            <h1 class="display-2 text-white">{{name}}</h1>
+            <h3 class="display-4 text-white">{{symbol}}</h3>
+            <p class="text-white mt-0 mb-5"><br> {{symbol}}<br>{{region}}</p>
             <a href="#!" class="btn btn-info">{{current_price}}</a>
           </div>
         </div>
@@ -330,28 +330,32 @@
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-username">Last Annual Total Assets</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="{{stock.last_annual_total_assets}}" value="{{stock.last_annual_total_assets}}" disabled>
+                        <label class="form-control-label" for="input-username">Last Day Low</label>
+                        <input type="text" id="input-username" class="form-control form-control-alternative"
+                        placeholder="{{last_day_low}}" value="{{stock.last_annual_total_assets}}" disabled>
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-email">Last Annual Net Income</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="{{stock.last_annual_net_income}}" disabled>
+                        <label class="form-control-label" for="input-email">Last Day High</label>
+                        <input type="email" id="input-email" class="form-control form-control-alternative"
+                        placeholder="{{last_day_high}}" disabled>
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">Last Annual Revenue</label>
-                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="{{stock.last_annual_revenue}}" value="{{stock.last_annual_revenue}}" disabled>
+                        <label class="form-control-label" for="input-first-name">Last Day Open</label>
+                        <input type="text" id="input-first-name" class="form-control form-control-alternative"
+                        placeholder="{{stock.last_annual_revenue}}" value="{{last_day_open}}" disabled>
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Last Annual EPS</label>
-                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="{{stock.last_annual_eps}}" value="{{stock.last_annual_eps}}" disabled>
+                        <label class="form-control-label" for="input-last-name">Last Day Close</label>
+                        <input type="text" id="input-last-name" class="form-control form-control-alternative"
+                        placeholder="{{last_day_close}}" value="{{stock.last_annual_eps}}" disabled>
                       </div>
                     </div>
                   </div>
@@ -367,7 +371,7 @@
                         <label class="form-control-label" for="input-address">Address</label>
                         <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
                       </div>
-                    </div> 
+                    </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-4">
@@ -420,19 +424,26 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Buy Stocks</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-                    <form method='POST'>
+
+                    <form method='POST' action="{% url 'detail' name symbol region %}">
                         {% csrf_token %}
-                        <div class="modal-body">
-                            <input type="text" class="form-control" name="quantity" placeholder="Enter total Number Of Stocks to Buy:"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <div style="width: 600px; margin-left: 50px; background-color: #DDD">
+                          <div class="input-group">
+                            <input type="text" class="form-control" name="quantity"
+                            placeholder="Enter total Number Of Stocks to Buy:" aria-label="Recipient's username"
+                            aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-secondary" type="submit" name="buy">Buy</button>
+                            </div>
+                          </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" name="buy" class="btn btn-default" data-dismiss="modal">Buy</button>
-                        </div>
+                        <br/>
+                        <br/>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -440,18 +451,23 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Sell Stocks</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-                    <form method='POST'>
+                    <form method='POST' action="{% url 'detail' name symbol region %}">
                         {% csrf_token %}
-                        <div class="modal-body">
-                            <input type="text" class="form-control" name="squantity" placeholder="Enter total Number Of Stocks to Sell:"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <div style="width: 600px; margin-left: 50px; background-color: #DDD">
+                          <div class="input-group">
+                            <input type="text" class="form-control" name="squantity"
+                            placeholder="Enter total Number Of Stocks to Sell:" aria-label="Recipient's username"
+                            aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-secondary" type="submit" name="sell">Sell</button>
+                            </div>
+                          </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" name="sell" class="btn btn-default" data-dismiss="modal">Sell</button>
-                        </div>
+                        <br/>
+                        <br/>
                     </form>
                 </div>
             </div>
@@ -534,7 +550,7 @@
         }
     });
     </script>
-    
+
     <script>
         var x = {{ open }}
         var ctx = document.getElementById("myChart2").getContext('2d');
@@ -565,7 +581,7 @@
         }
     });
     </script>
-    
+
     <script>
         var ctx = document.getElementById("myChart3").getContext('2d');
         var myChart = new Chart(ctx, {

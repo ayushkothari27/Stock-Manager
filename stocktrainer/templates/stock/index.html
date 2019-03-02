@@ -71,7 +71,7 @@
                 Region: {{region}}
                 Currency: {{currency}}
               </p>
-              <a href="#" class="btn btn-primary">View Details</a>
+              <a href="{% url 'detail' name symbol region %}" class="btn btn-primary">View Details</a>
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@
       {% if forloop.counter0|divisibleby:2 %}<tr>{% endif %}
         <td>
           <div class="list-group" style="margin: 10px">
-            <a href="{% url 'detail' i.pk %}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <a href="{% url 'detail' name symbol region %}" class="list-group-item list-group-item-action flex-column align-items-start">
               <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1" style="color: #004084"><b>{{i.name}}</b></h5><br/>
                 <br/>
