@@ -1,172 +1,271 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 {% block content %}
-{% include 'stock/header.html' %}
-{% block content1 %}
-{% endblock %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-<div style="background-color:#eee; height: 800px">
-<div class="maincontent" style="margin-left: 160px; margin-right: 160px;">
 
-<button type="submit" class="btn btn-primary btn-lg" name="add" disabled style="position: absolute; left: 180px; top: 80px; width: 150px; height: 80px; font-size: 45px; background-color: #004084">{{crypto.symbol}}</button>
-        <button type="submit" class="btn btn-primary btn-lg" name="add" disabled style="position: absolute; right: 180px; top: 80px; width: 150px; height: 80px; font-size: 25px; background-color: #004084; overflow: hidden">{{current_price}}</button>
-        <div style="color: #004084; margin-top:15px; text-align: center; background-color: #fff; padding: 40px; margin-bottom: 5px">
-            <h1 style="margin-top: 30px;">{{crypto.name}}</h1><br />
+<!-- Header -->
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+    style="min-height: 600px; background-image: url({% static '/assets/img/theme/profile-cover.jpg' %}); background-size: cover; background-position: center top;">
+    <!-- Mask -->
+    <span class="mask bg-gradient-default opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="col-lg-12 col-md-10">
+                <h1 class="display-2 text-white">{{crypto.name}}</h1>
+                <h3 class="display-4 text-white">{{crypto.symbol}}</h3>
+                <!-- <p class="text-white mt-0 mb-5"><a href="{{stock.website}}">{{stock.website}}</a><br>
+                    {{stock.industry}}<br>{{stock.sector}}</p> -->
+                <a href="#!" class="btn btn-info">{{current_price}}</a>
+            </div>
         </div>
-
-<!--
-<h1 style="padding:10px; margin-top:30px; background-color: #AEAAEC;border:1px black solid; margin-bottom: 27px; border-radius: 35px;font-size: 50px; text-align: center">{{crypto.name}}<br/>({{crypto.symbol}})</h1>
-<div style="width: 250px;border: 2px solid gray; margin-top:10px; margin-bottom: 26px; padding-left: 10px">
-    <h3>Current Price: </h3>
-    <h2>{{current_price}}</h2>
-</div>
--->
-
-</br>
-<div class="accordion" id="accordion">
-  <div class="card">
-    <div class="card-header" id="headingOne">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-          Graph Of Last 30 day Prices
-        </button>
-      </h5>
     </div>
-    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-      <div class="card-body">
-        <div style="width: 550px; height: 580px;">
-        <div class="chart-container" style="position: relative; height:60vh; width:75vw">
-            <canvas id="myChart"></canvas>
-        </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="card">
-    <div class="card-header" id="headingThree">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          Graph Of Volume in Last-30 Days
-        </button>
-      </h5>
-    </div>
-    <div id="collapseThree" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
-      <div class="card-body">
-        <div style="width: 550px; height: 580px">
-        <div class="chart-container" style="position: absolute; height:60vh; width:75vw">
-            <canvas id="myChart2"></canvas>
-        </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+    <div class="row">
+        <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+            <div class="card card-profile shadow">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 order-lg-2">
+                        <div class="card-profile-image">
+                            <a href="#">
+                                <img src="{% static "/assets/img/theme/team-4-800x800.jpg" %}" class="rounded-circle">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                    <div class="d-flex justify-content-between">
+                        <a href="#" class="btn btn-sm btn-info mr-4" name="buy" data-toggle="modal"
+                            data-target="#buyModal">Buy</a>
+                        <a href="#" class="btn btn-sm btn-default float-right" name="sell" data-toggle="modal"
+                            data-target="#sellModal">Sell</a>
+                    </div>
+                </div>
+                <div class="card-body pt-0 pt-md-4">
+                    <!-- <div class="row">
+                <div class="col">
+                  <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                    <div>
+                      <span class="heading">22</span>
+                      <span class="description">Friends</span>
+                    </div>
+                    <div>
+                      <span class="heading">10</span>
+                      <span class="description">Photos</span>
+                    </div>
+                    <div>
+                      <span class="heading">89</span>
+                      <span class="description">Comments</span>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+                    <br><br>
+                    <div class="text-center">
+                        <h3>
+                            Mock Crypto Trainer
+                        </h3>
+                        <!-- <div class="h5 font-weight-300">
+                  <i class="ni location_pin mr-2"></i>Bucharest, Romania
+                </div> -->
+                        <div class="h5 mt-4">
+                            <i class="ni business_briefcase-24 mr-2"></i>{{stock.name}}, <span
+                                class="font-weight-light">{{stock.symbol}}</span>
+                        </div>
+                        <!-- <div>
+                  <i class="ni education_hat mr-2"></i>University of Computer Science
+                </div> -->
+                        <hr class="my-4" />
+                        <p>Buy and sell virtual cryptocurrencies in real time and train yourself to become a master at
+                            cryptocurrencies.</p>
+                        <a href="#">Manage other virtual cryptocurrencies</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8 order-xl-1">
+            <div class="card bg-secondary shadow">
+                <!-- <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">My account</h3>
+                </div>
+                <div class="col-4 text-right">
+                  <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                </div>
+              </div>
+            </div> -->
+                <div class="card-body">
+                    <h6 class="heading-small text-muted mb-4">Cryptocurrency information</h6>
+                    <hr class="my-4" />
+                    <!-- Graph 1 -->
+                    <h6 class="heading-small text-muted mb-4">Graph Of Last 30 day Prices</h6>
+                    <div class="pl-lg-4">
+                        <canvas id="myChart" style="height:500px;"></canvas>
+                    </div>
+                    <hr class="my-4" />
+                    <!-- Graph 2 -->
+                    <h6 class="heading-small text-muted mb-4">Graph Of Last Minute Prices</h6>
+                    <div class="pl-lg-4">
+                        <canvas id="myChart2" style="height:500px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Modals-->
+    <div class="modal fade" id="buyModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Buy Stocks</h4>
+                </div>
+                <form method='POST'>
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <input type="text" class="form-control" name="quantity"
+                            placeholder="Enter total Number Of Stocks to Buy:" aria-label="Recipient's username"
+                            aria-describedby="basic-addon2">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="buy" class="btn btn-default" data-dismiss="modal">Buy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="sellModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Sell Stocks</h4>
+                </div>
+                <form method='POST'>
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <input type="text" class="form-control" name="squantity"
+                            placeholder="Enter total Number Of Stocks to Sell:" aria-label="Recipient's username"
+                            aria-describedby="basic-addon2">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="sell" class="btn btn-default" data-dismiss="modal">Sell</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
+<!-- Argon Scripts -->
+<!-- Core -->
+<script src="{% static "/assets/vendor/jquery/dist/jquery.min.js" %}"></script>
+<script src="{% static "/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
+<script src="{% static "/assets/js/argon.js" %}"></script>
 <script>
-//var x = {{open}}
-var ctx = document.getElementById("myChart").getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        //labels:{{month}}
-        labels: ['"2018-04-03"', '"2018-04-02"', '"2018-03-29"', '"2018-03-28"', '"2018-03-27"', '"2018-03-26"', '"2018-03-23"', '"2018-03-22"', '"2018-03-21"', '"2018-03-20"', '"2018-03-19"', '"2018-03-16"', '"2018-03-15"', '"2018-03-14"', '"2018-03-13"', '"2018-03-12"', '"2018-03-09"', '"2018-03-08"', '"2018-03-07"', '"2018-03-06"', '"2018-03-05"', '"2018-03-02"', '"2018-03-01"', '"2018-02-28"', '"2018-02-27"', '"2018-02-26"', '"2018-02-23"', '"2018-02-22"', '"2018-02-21"'],
-        datasets: [{
-            label: 'Opening Price',
-            data: {{open_data}},
-            backgroundColor: [
-                //'rgba(255, 99, 132, 0.2)',
-                'rgba(255, 255, 255, 0.2)',
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-            ],
-            borderWidth: 1
-        },
+    //var x = {{open}}
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            //labels:{{month}}
+            labels: ['"2018-04-03"', '"2018-04-02"', '"2018-03-29"', '"2018-03-28"', '"2018-03-27"', '"2018-03-26"', '"2018-03-23"', '"2018-03-22"', '"2018-03-21"', '"2018-03-20"', '"2018-03-19"', '"2018-03-16"', '"2018-03-15"', '"2018-03-14"', '"2018-03-13"', '"2018-03-12"', '"2018-03-09"', '"2018-03-08"', '"2018-03-07"', '"2018-03-06"', '"2018-03-05"', '"2018-03-02"', '"2018-03-01"', '"2018-02-28"', '"2018-02-27"', '"2018-02-26"', '"2018-02-23"', '"2018-02-22"', '"2018-02-21"'],
+            datasets: [{
+                label: 'Opening Price',
+                data: {{ open_data }},
+        backgroundColor: [
+            //'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 255, 255, 0.2)',
+        ],
+        borderColor: [
+            'rgba(255,99,132,1)',
+        ],
+        borderWidth: 1
+    },
         {
             label: 'Closing Price',
-            data: {{close_data}},
-            backgroundColor: [
-                //'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 255, 255, 0.2)',
-            ],
-            borderColor: [
-                'rgba(54, 162, 235, 1)',
-            ],
+            data: {{ close_data }},
+    backgroundColor: [
+        //'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 255, 255, 0.2)',
+    ],
+        borderColor: [
+            'rgba(54, 162, 235, 1)',
+        ],
             borderWidth: 1
-        },
-        {
-            label: 'Highest Price',
-            data: {{high_data}},
-            backgroundColor: [
-                'rgba(255, 255, 255, 0.2)',
-            ],
+                },
+    {
+        label: 'Highest Price',
+            data: { { high_data } },
+        backgroundColor: [
+            'rgba(255, 255, 255, 0.2)',
+        ],
             borderColor: [
                 'rgba(255, 206, 86, 1)',
             ],
-            borderWidth: 1
-        },
-        {
-            label: 'Lowest Price',
-            data: {{low_data}},
-            backgroundColor: [
-                //'rgba(75, 192, 192, 0.2)',
-                //'rgba(153, 102, 255, 0.2)',
-                //'rgba(255, 159, 64, 0.2)'
-                'rgba(255, 255, 255, 0.2)',
-            ],
+                borderWidth: 1
+    },
+    {
+        label: 'Lowest Price',
+            data: { { low_data } },
+        backgroundColor: [
+            //'rgba(75, 192, 192, 0.2)',
+            //'rgba(153, 102, 255, 0.2)',
+            //'rgba(255, 159, 64, 0.2)'
+            'rgba(255, 255, 255, 0.2)',
+        ],
             borderColor: [
                 //'rgba(75, 192, 192, 1)',
                 'rgba(153, 102, 255, 1)',
                 'rgba(255, 159, 64, 1)'
             ],
-            borderWidth: 1
-        }]
-    },
+                borderWidth: 1
+    }]
+            },
     options: {
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero:false
+                    beginAtZero: false
                 }
             }]
         },
     }
-});
+        });
 </script>
 
 <script>
-//var x = {{open}}
-var ctx = document.getElementById("myChart2").getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        //labels:{{month}}
-        labels: ['"2018-04-03"', '"2018-04-02"', '"2018-03-29"', '"2018-03-28"', '"2018-03-27"', '"2018-03-26"', '"2018-03-23"', '"2018-03-22"', '"2018-03-21"', '"2018-03-20"', '"2018-03-19"', '"2018-03-16"', '"2018-03-15"', '"2018-03-14"', '"2018-03-13"', '"2018-03-12"', '"2018-03-09"', '"2018-03-08"', '"2018-03-07"', '"2018-03-06"', '"2018-03-05"', '"2018-03-02"', '"2018-03-01"', '"2018-02-28"', '"2018-02-27"', '"2018-02-26"', '"2018-02-23"', '"2018-02-22"', '"2018-02-21"'],
-        datasets: [{
-            label: 'Volume Of Data',
-            data: {{volume_data}},
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-            ],
-            borderWidth: 1
-        }]
-    },
+    //var x = {{open}}
+    var ctx = document.getElementById("myChart2").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            //labels:{{month}}
+            labels: ['"2018-04-03"', '"2018-04-02"', '"2018-03-29"', '"2018-03-28"', '"2018-03-27"', '"2018-03-26"', '"2018-03-23"', '"2018-03-22"', '"2018-03-21"', '"2018-03-20"', '"2018-03-19"', '"2018-03-16"', '"2018-03-15"', '"2018-03-14"', '"2018-03-13"', '"2018-03-12"', '"2018-03-09"', '"2018-03-08"', '"2018-03-07"', '"2018-03-06"', '"2018-03-05"', '"2018-03-02"', '"2018-03-01"', '"2018-02-28"', '"2018-02-27"', '"2018-02-26"', '"2018-02-23"', '"2018-02-22"', '"2018-02-21"'],
+            datasets: [{
+                label: 'Volume Of Data',
+                data: {{ volume_data }},
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.2)'
+        ],
+        borderColor: [
+            'rgba(255,99,132,1)',
+        ],
+        borderWidth: 1
+    }]
+            },
     options: {
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero:false
+                    beginAtZero: false
                 }
             }]
         },
     }
-});
+        });
 </script>
-
 
 
 {% endblock %}

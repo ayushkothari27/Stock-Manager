@@ -318,7 +318,7 @@ def detail(request, name, symbol, region):
             message="Please Login to Continue"
             return redirect('/login')
     if request.method=='POST' and 'sell' in request.POST:
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             quantity = int(request.POST.get('squantity', ''))
             q = quantity
             stock = Stock.objects.get(symbol=symbol)

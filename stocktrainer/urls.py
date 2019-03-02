@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^stock/(?P<name>.*)/(?P<symbol>.*)/(?P<region>.*)$', views.detail, name='detail'),
     url(r'^login/$', views.login_user, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
+    url(r'^login/$', views.login, name='login'),
     url(r'^register/$', views.register, name='register'),
     url(r'^profile/(?P<user_id>[0-9]+)$', views.profile, name='profile'),
     url(r'^news/$', views.news, name='news'),
@@ -23,6 +24,11 @@ urlpatterns = [
     url(r'^data_from_recombee/$', views.data_from_recombee, name='data_from_recombee'),
     url(r'^watchlist-delete/(?P<pk>[0-9]+)/$', WatchlistDeleteView.as_view(), name='watchlist_delete'),
     url(r'^bot/(?P<name>.*)/$', views.bot, name='bot'),
+<<<<<<< HEAD
     url(r'^google_trends/(?P<name>.*)/$', views.google_trends, name='google_trends'),
     url(r'^time_series/(?P<name>.*)/(?P<symbol>.*)/(?P<region>.*)/$',views.load_time_series,name='load_time_series')
+=======
+    url(r'^time_series/(?P<name>.*)/(?P<symbol>.*)/(?P<region>.*)$', views.load_time_series, name='load_time_series'),
+    #url(r'^time_series/(?P<name>.*/(?P<symbol>.*/(?P<region>.*/$',views.load_time_series,name='load_time_series')
+>>>>>>> 44143f22fb3b4074e9b4e6bd68f96cae09ef28bf
 ]
