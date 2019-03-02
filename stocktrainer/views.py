@@ -737,3 +737,4 @@ def google_trends(request,name):
     print(value)
     date = xyz.index
     print(date)
+    return render(request, 'stock/google_trends.html', {})
