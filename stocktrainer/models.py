@@ -13,8 +13,8 @@ class Crypto(models.Model):
 class Stock(models.Model):
     name = models.CharField(max_length=100)
     symbol = models.CharField(max_length=10, blank=True,default="")
-    price = models.CharField(max_length=12, blank=True)
-    region = models.CharField(max_length=30, blank=True)
+    price = models.CharField(max_length=12, blank=True,default="")
+    region = models.CharField(max_length=30, blank=True,default="")
     history = models.TextField(blank=True, default="NA")
     prediction = models.TextField(blank=True, default="NA")
     sentiment = models.CharField(max_length=50, blank=True, default="NA")
