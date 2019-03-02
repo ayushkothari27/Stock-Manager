@@ -730,11 +730,14 @@ class listener(StreamListener):
 
 
 def google_trends(request,name):
-    kw_list = ["arsenal"]
+    kw_list = [name]
     xyz = pytrends.get_historical_interest(kw_list, year_start=2019, month_start=1, day_start=1, hour_start=0, year_end=2019, month_end=2, day_end=1, hour_end=0, cat=0, geo='', gprop='', sleep=0)
     value = xyz.ix[:,0]
     value = value.tolist()
     print(value)
     date = xyz.index
-    print(date)
-    return render(request, 'stock/google_trends.html', {})
+    dates = []
+    for time in date:
+        dates.append(time.strftime("%Y-%m-%d %H:%M:%S"))
+    print(dates)
+    return render(request, 'stock/google_trends.html', {'value':value,'dates':dates})

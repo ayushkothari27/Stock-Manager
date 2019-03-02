@@ -4,230 +4,22 @@
 
 <!-- Header -->
 <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
-  style="min-height: 600px; background-image: url({% static '/assets/img/theme/profile-cover.jpg' %}); background-size: cover; background-position: center top;">
+  style="min-height: 600px; background-size: cover; background-position: center top;">
   <!-- Mask -->
 
-  <span class="mask bg-gradient-default opacity-8"></span>
+  <span class="mask"></span>
   <!-- Header container -->
   <div class="container-fluid d-flex align-items-center">
 
-    <div class="row">
-
-      <div class="col-lg-12 col-md-10">
-
-<!-- Brand -->
-        <h1 class="display-2 text-white">{{user.username}}</h1>
-        <h3 class="display-4 text-white">Investor | Trader | Expert</h3>
-        <!-- <p class="text-white mt-0 mb-5"><a href="{{stock.website}}">{{stock.website}}</a> {{stock.industry}} {{stock.sector}}</p> -->
-        <a href="#!" class="btn btn-info">Balance: {{cb}}</a>
-      </div>
-    </div>
+  <canvas id="myChart" style="height:500px;"></canvas>
   </div>
 </div>
 <!-- Page content -->
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
-      <div class="card card-profile shadow">
-        <div class="row justify-content-center">
-          <div class="col-lg-3 order-lg-2">
-            <div class="card-profile-image">
-              <a href="#">
-                <img src="{% static "/assets/img/theme/team-4-800x8002.jpg" %}" class="rounded-circle">
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-          <!-- <div class="d-flex justify-content-between">
-                <a href="#" class="btn btn-sm btn-info mr-4">Buy</a>
-                <a href="#" class="btn btn-sm btn-default float-right">Sell</a>
-              </div> -->
-        </div>
-        <div class="card-body pt-0 pt-md-4">
-          <!-- <div class="row">
-                <div class="col">
-                  <div class="card-profile-stats d-flex justify-content-center mt-md-5">
-                    <div>
-                      <span class="heading">22</span>
-                      <span class="description">Friends</span>
-                    </div>
-                    <div>
-                      <span class="heading">10</span>
-                      <span class="description">Photos</span>
-                    </div>
-                    <div>
-                      <span class="heading">89</span>
-                      <span class="description">Comments</span>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
-          <br><br>
-          <div class="text-center">
-            <!-- <h3>
-                  {{stock.name}}<span class="font-weight-light">, {{stock.symbol}}</span>
-                </h3> -->
-            <!-- <div class="h5 font-weight-300">
-                  <i class="ni location_pin mr-2"></i>Bucharest, Romania
-                </div> -->
-            <!-- <div class="h5 mt-4">
-                  <i class="ni business_briefcase-24 mr-2"></i>You have {{user.available_money}} left in your virtual
-                  account
-                </div> -->
-            <!-- <div>
-                  <i class="ni education_hat mr-2"></i>University of Computer Science
-                </div> -->
-            <!-- <hr class="my-4" /> -->
-            <br>
-            <br>
-            <p><i>“Sheer will and determination is no substitute for something that actually works.” – Jason
-                Klatt.</i></p>
-            <!-- <a href="#">Manage other virtual stocks</a> -->
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-8 order-xl-1">
-      <div class="card bg-secondary shadow">
-        <!-- <div class="card-header bg-white border-0">
-              <div class="row align-items-center">
-                <div class="col-8">
-                  <h3 class="mb-0">My account</h3>
-                </div>
-                <div class="col-4 text-right">
-                  <a href="#!" class="btn btn-sm btn-primary">Settings</a>
-                </div>
-              </div>
-            </div> -->
-        <div class="card-body">
-          <form>
-            <!-- <h6 class="heading-small text-muted mb-4">Stock information</h6>
-                <div class="pl-lg-4">
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-username">Last Annual Total Assets</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative"
-                          placeholder="{{stock.last_annual_total_assets}}" value="{{stock.last_annual_total_assets}}"
-                          disabled>
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-email">Last Annual Net Income</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative"
-                          placeholder="{{stock.last_annual_net_income}}" disabled>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">Last Annual Revenue</label>
-                        <input type="text" id="input-first-name" class="form-control form-control-alternative"
-                          placeholder="{{stock.last_annual_revenue}}" value="{{stock.last_annual_revenue}}" disabled>
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Last Annual EPS</label>
-                        <input type="text" id="input-last-name" class="form-control form-control-alternative"
-                          placeholder="{{stock.last_annual_eps}}" value="{{stock.last_annual_eps}}" disabled>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <hr class="my-4" /> -->
-            <!-- Graph 1 -->
-            <h6 class="heading-small text-muted mb-4">Items in Watchlist</h6>
-            <div class="pl-lg-4">
-              <div class="row">
-                <div class="col-md-12">
-                  <!-- <div class="form-group">
-                        <label class="form-control-label" for="input-address">Address</label>
-                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
-                      </div>-->
-                  <table class="table table-bordered table-hover table-sm">
-                    <thead>
-                      <tr>
-                        <th scope="col">Stock-ID</th>
-                        <th scope="col">Name Of Stock</th>
-                        <th scope="col">Added On</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for stock in stocks %}
-                      <tr>
-                        <th scope="row">{{stock.id}}</th>
-                        <td>{{stock}}</td>
-                        <td>{{stock.added_on}}</td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
 
-              </div>
-              <!-- <div class="row">
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-city">City</label>
-                        <input type="text" id="input-city" class="form-control form-control-alternative"
-                          placeholder="City" value="New York">
-                      </div>
-                    </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-country">Country</label>
-                        <input type="text" id="input-country" class="form-control form-control-alternative"
-                          placeholder="Country" value="United States">
-                      </div>
-                    </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-country">Postal code</label>
-                        <input type="number" id="input-postal-code" class="form-control form-control-alternative"
-                          placeholder="Postal code">
-                      </div>
-                    </div>
-                  </div> -->
-            </div>
-            <br>
-            <hr class="my-4" />
-            <br>
-            <h6 class="heading-small text-muted mb-4">Bought Items</h6>
-            <div class="pl-lg-4">
-              <div class="row">
-                <div class="col-md-12">
-                  
-                </div>
-              </div>
+    <img src="{% static '/assets/img/heatmap.png' %}" width="1000px">
 
-              <!-- <hr class="my-4" />
-
-                <h6 class="heading-small text-muted mb-4">Graph Of Last Minute Prices</h6>
-                <div class="pl-lg-4">
-                  <canvas id="myChart3"></canvas>
-                </div>
-                <hr class="my-4" />
-
-                <h6 class="heading-small text-muted mb-4">Graph Of Volume in Last 30 Days</h6>
-                <div class="pl-lg-4">
-                  <canvas id="myChart2"></canvas>
-                </div> -->
-              <!-- <hr class="my-4" />
-                <h6 class="heading-small text-muted mb-4">About me</h6>
-                <div class="pl-lg-4">
-                  <div class="form-group">
-                    <label>About Me</label>
-                    <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
-                  </div>
-                </div> -->
-          </form>
-        </div>
-      </div>
-    </div>
   </div>
 
 </div>
@@ -236,4 +28,38 @@
 <script src="{% static "/assets/vendor/jquery/dist/jquery.min.js" %}"></script>
 <script src="{% static "/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
 <script src="{% static "/assets/js/argon.js" %}"></script>
+
+<script>
+    var x = {{ dates|safe }}
+    var y = {{ value|safe }}
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ dates|safe }},
+            datasets: [{
+                label: 'Google Trends',
+                data: {{ value|safe }},
+        backgroundColor: [
+            //'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 255, 255, 0.2)',
+        ],
+        borderColor: [
+            'rgba(255,99,132,1)',
+        ],
+        borderWidth: 1
+    },
+    ]
+        },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false
+                }
+            }]
+        },
+    }
+    });
+</script>
 {% endblock %}
