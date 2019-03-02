@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^stock/(?P<name>.*)/(?P<symbol>.*)/(?P<region>.*)$', views.detail, name='detail'),
     url(r'^login/$', views.login_user, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
+    url(r'^login/$', views.login, name='login'),
     url(r'^register/$', views.register, name='register'),
     url(r'^profile/(?P<user_id>[0-9]+)$', views.profile, name='profile'),
     url(r'^news/$', views.news, name='news'),

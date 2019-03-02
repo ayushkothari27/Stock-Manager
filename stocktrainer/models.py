@@ -13,13 +13,8 @@ class Crypto(models.Model):
 class Stock(models.Model):
     name = models.CharField(max_length=100)
     symbol = models.CharField(max_length=10, blank=True,default="")
-<<<<<<< HEAD
     price = models.CharField(max_length=12, blank=True,default="")
     region = models.CharField(max_length=30, blank=True,default="")
-=======
-    price = models.FloatField(blank=True)
-    region = models.CharField(max_length=30, blank=True)
->>>>>>> 50f39941ed393060ccd594668ad64ad6bfaf4923
     history = models.TextField(blank=True, default="NA")
     prediction = models.TextField(blank=True, default="NA")
     sentiment = models.CharField(max_length=50, blank=True, default="NA")
@@ -49,7 +44,7 @@ class Transaction(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     balance = models.FloatField(default=50000)
-    starting_money = models.FloatField()
+    starting_money = models.FloatField(default=0.0)
     def __str__(self):
         return self.user.first_name
 
