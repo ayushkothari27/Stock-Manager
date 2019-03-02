@@ -48,12 +48,32 @@ fenil_key = "63XAFJTFC5HF4OE9"
 
 client = RecombeeClient('stockmanager', 'Y9UsOCsqPBetEKgFtmatmcdBeifBwcFqgXTAYhVpu5hEPBh31DmQ18JC5w0hqqbb')
 
+@login_required(login_url='/login/')
+def stockform(request):
+    if request.method == 'GET':
+        return render(request, 'stock/stockform.html')
+    elif request.method == 'POST':
+        user = request.user
+        name = request.POST.get('name', '')
+        date = request.POST.get('date', '')
+        type = request.POST['type_investment']
+        quantity = request.POST.get('quantity', '')
+        method = request.POST['type_transaction']
+        price = request.POST.get('price', '')
+        trans = Transaction(user=user, name=name, date=date, type=type, quantity=quantity, method=method, price=price)
+        cost = float(quantity)*float(price)
+        profile = Profile.objects.get(user=request.user)
+        if method=="Buy":
+            profile.starting_money = profile.starting_money - cost
+        elif method=="Sell":
+            profile.starting_money = profile.starting_money + cost
+        trans.save()
+        profile.save()
+        return render(request, 'stock/stockform.html')
+
 def header_view(request):
     print("hey")
     watch_stocks = Watch.objects.all()
-    #print(watch_stocks)
-    #for watch in watch_stocks:
-    #    print(watch)
     context = {'watch_stocks':watch_stocks}
     return render(request,'stock/header.html',context)
 
@@ -411,11 +431,11 @@ def logout(request):
 @login_required(login_url='/login/')
 def profile(request, user_id):
    user = get_object_or_404(User, pk=user_id)
-   list_of_stocks = user.entries.all()
    bought_stocks = user.bentries.all()
    profile = Profile.objects.get(user=user)
-   current_balance = profile.balance
-   return render(request, 'stock/profile.html', {'user': user, 'stocks': list_of_stocks, 'cb': current_balance, 'bs': bought_stocks})
+   history  = user.transac.all()
+   return render(request, 'stock/profile.html',
+   {'user': user, 'history': history, 'profile': profile, 'bs': bought_stocks})
 
 
 def news(request):

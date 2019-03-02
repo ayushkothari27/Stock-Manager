@@ -31,7 +31,7 @@ class Stock(models.Model):
         return str(self.name) + ' (' + str(self.symbol) + ')'
 
 class Transaction(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transac')
     name = models.CharField(max_length = 50)
     date = models.DateField(("Date"), default=datetime.date.today, blank=True)
     type_choice = (("Stock", "Stock"),("Foreign Exchange", "ForEx"),("Crypto Currency", "Crypt"))
@@ -40,6 +40,9 @@ class Transaction(models.Model):
     method_type = (("Buy", "Buy"),("Sell", "Sell"))
     method = models.CharField(max_length=10, choices=method_type)
     price = models.FloatField()
+
+    def __str__(self):
+        return self.user.first_name + self.name
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')

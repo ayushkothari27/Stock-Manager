@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^profile/(?P<user_id>[0-9]+)$', views.profile, name='profile'),
     url(r'^news/$', views.news, name='news'),
     url(r'^crypto/$',views.crypto,name='crypto'),
+    url(r'^stockform/$',views.stockform,name='stockform'),
     url(r'^crypto/(?P<crypto_id>[0-9]+)/$',views.crypto_detail,name='crypto_detail'),
     url(r'^load_time_series/$',views.load_time_series,name='load_time_series'),
     url(r'^forex/$',views.forex,name='forex'),
