@@ -1,47 +1,168 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
 
-<!DOCTYPE html>
-<html>
-<head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<title>News</title>
-</head>
-<style>
-body {
-	background-color: #eee;
-}
-.container {
-	background-color:#fff;
-	margin-top: 0px;
-	padding: 10px;
-}
-img {
-	margin: 10px;
-	margin-right: 30px;
-}
-.media-body {
-	padding: 20px 20px 0 0;
-}
-</style>
-<body>
-{% include 'stock/header.html' %}
+<!-- Header -->
+<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+	<div class="container-fluid">
+		<div class="header-body">
+			<!-- Card stats -->
+			<div class="row">
+				<div class="col-xl-3 col-lg-6">
+					<div class="card card-stats mb-4 mb-xl-0">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">Traffic</h5>
+									<span class="h2 font-weight-bold mb-0">350,897</span>
+								</div>
+								<div class="col-auto">
+									<div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+										<i class="fas fa-chart-bar"></i>
+									</div>
+								</div>
+							</div>
+							<p class="mt-3 mb-0 text-muted text-sm">
+								<span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+								<span class="text-nowrap">Since last month</span>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-lg-6">
+					<div class="card card-stats mb-4 mb-xl-0">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">New users</h5>
+									<span class="h2 font-weight-bold mb-0">2,356</span>
+								</div>
+								<div class="col-auto">
+									<div class="icon icon-shape bg-warning text-white rounded-circle shadow">
+										<i class="fas fa-chart-pie"></i>
+									</div>
+								</div>
+							</div>
+							<p class="mt-3 mb-0 text-muted text-sm">
+								<span class="text-danger mr-2"><i class="fas fa-arrow-down"></i> 3.48%</span>
+								<span class="text-nowrap">Since last week</span>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-lg-6">
+					<div class="card card-stats mb-4 mb-xl-0">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">Sales</h5>
+									<span class="h2 font-weight-bold mb-0">924</span>
+								</div>
+								<div class="col-auto">
+									<div class="icon icon-shape bg-yellow text-white rounded-circle shadow">
+										<i class="fas fa-users"></i>
+									</div>
+								</div>
+							</div>
+							<p class="mt-3 mb-0 text-muted text-sm">
+								<span class="text-warning mr-2"><i class="fas fa-arrow-down"></i> 1.10%</span>
+								<span class="text-nowrap">Since yesterday</span>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-lg-6">
+					<div class="card card-stats mb-4 mb-xl-0">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">Performance</h5>
+									<span class="h2 font-weight-bold mb-0">49,65%</span>
+								</div>
+								<div class="col-auto">
+									<div class="icon icon-shape bg-info text-white rounded-circle shadow">
+										<i class="fas fa-percent"></i>
+									</div>
+								</div>
+							</div>
+							<p class="mt-3 mb-0 text-muted text-sm">
+								<span class="text-success mr-2"><i class="fas fa-arrow-up"></i> 12%</span>
+								<span class="text-nowrap">Since last month</span>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+	<!-- Table -->
+	<div class="row">
+		<div class="col">
+			<div class="card shadow">
+				<div class="card-header bg-transparent">
+					<h3 class="mb-0">News</h3>
+				</div>
+				<div class="card-body">
+					<div class="row icon-examples">
+						{% for article in articles  %}
+
+						<div class="container col-lg-10 col md-10">
+
+							<div class="media">
+								<span style="padding-right: 20px">
+									<img src="{{article.image_url}}" height="150px" width="200px">
+								</span>
+								<div class="media-body">
+									<a style="font-size: 20px; padding: 20px 0; font-weight: bold;"
+										href="{{article.url}}">{{article.title}}</a>
+									<p>{{article.description}}</p>
+								</div>
+							</div>
+
+							<hr class="my-4" />
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Argon Scripts -->
+<!-- Core -->
+<script src="{% static "/assets/vendor/jquery/dist/jquery.min.js" %}"></script>
+<script src="{% static "/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
+<script src="{% static "/assets/js/argon.js" %}"></script>
+
+
+{% endblock %}
+
+
+
+
+
+
+
 <div style="padding-top: 80px;">
 	{% for article in articles  %}
-	
-		<div class="container">
-			
-				<div class="media">
-				<span class="media-left">
-					<img src="{{article.image_url}}" height="200px" width="300px">
-				</span>
-				<div class="media-body">
-					<a style="font-size: 20px; padding: 20px 0; font-weight: bold;" href="{{article.url}}">{{article.title}}</a>
-					<p>{{article.description}}</p>
-				</div>
-				</div>
-			
-		</div>	
+
+	<div class="container">
+
+		<div class="media">
+			<span class="media-left">
+				<img src="{{article.image_url}}" height="200px" width="300px">
+			</span>
+			<div class="media-body">
+				<a style="font-size: 20px; padding: 20px 0; font-weight: bold;"
+					href="{{article.url}}">{{article.title}}</a>
+				<p>{{article.description}}</p>
+			</div>
+		</div>
+
+	</div>
 	<br />
 	{% endfor %}
-	</div>
-</body>
-</html>
+</div>

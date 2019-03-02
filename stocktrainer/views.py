@@ -15,6 +15,7 @@ from recombee_api_client.api_requests import AddItemProperty, SetItemValues, Add
 from recombee_api_client.api_requests import RecommendItemsToItem, Batch, ResetDatabase
 from recombee_api_client.api_requests import *
 import random
+from pprint import pprint
 
 API_KEY = 'FQFTFEI83XPWMSPQ'
 
@@ -48,16 +49,31 @@ def crypto(request):
 @login_required(login_url='/login/')
 def index_page(request):
     fenil_key = "63XAFJTFC5HF4OE9"
-    if(request.method=='GET' or (request.method=='POST' and 'refresh' in request.POST)):
-        res=Stock.objects.all()
+    # Recombee results
+
+    # Kushal's code
+
+    # Will be replaced by above
+    all_stocks = Stock.objects.all()
+
+    name = []
+    symbol = []
+    region = []
+    currency = []
+    combined_list = zip(name, symbol, region, currency)
     if request.method=='POST' and 'search' in request.POST:
         search = request.POST.get('filter','')
         res = requests.get("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + search + "&apikey=" + fenil_key)
-        print(res)
-    user = request.user
-    list_of_stocks = user.entries.all()
-
-    return render(request, 'stock/index.html', {'all_stocks':res,'watch_stocks':list_of_stocks})
+        pprint(dict(res.json()))
+        query_results = dict(res.json())
+        for i in query_results['bestMatches']:
+            name.append(i['2. name'])
+            symbol.append(i['1. symbol'])
+            region.append(i['4. region'])
+            currency.append(i['8. currency'])
+        print("hello")
+        combined_list = zip(name, symbol, region, currency)
+    return render(request, 'stock/index.html', {'all_stocks':all_stocks, 'combined_list': combined_list})
 
 
 @login_required(login_url='/login/')
