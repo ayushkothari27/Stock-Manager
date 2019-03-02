@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^data_from_recombee/$', views.data_from_recombee, name='data_from_recombee'),
     url(r'^watchlist-delete/(?P<pk>[0-9]+)/$', WatchlistDeleteView.as_view(), name='watchlist_delete'),
     url(r'^bot/(?P<name>.*)/$', views.bot, name='bot'),
-    url(r'^time_series/(?P<name>.*/(?P<symbol>.*/(?P<region>.*/$',views.load_time_series,name='load_time_series')
+    url(r'^google_trends/(?P<name>.*)/$', views.google_trends, name='google_trends'),
+    url(r'^time_series/(?P<name>.*)/(?P<symbol>.*)/(?P<region>.*)/$',views.load_time_series,name='load_time_series')
 ]

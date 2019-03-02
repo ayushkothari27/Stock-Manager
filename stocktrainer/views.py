@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as django_logout
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
@@ -34,6 +33,9 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')
 sid = SentimentIntensityAnalyzer()
 
+
+from pytrends.request import TrendReq
+pytrends = TrendReq(hl='en-US', tz=360)
 # Create your views here.
 
 
@@ -725,3 +727,13 @@ class listener(StreamListener):
     def on_error(self, status_code):
         if status_code == 420:
             return False
+
+
+def google_trends(request,name):
+    kw_list = ["arsenal"]
+    xyz = pytrends.get_historical_interest(kw_list, year_start=2019, month_start=1, day_start=1, hour_start=0, year_end=2019, month_end=2, day_end=1, hour_end=0, cat=0, geo='', gprop='', sleep=0)
+    value = xyz.ix[:,0]
+    value = value.tolist()
+    print(value)
+    date = xyz.index
+    print(date)
