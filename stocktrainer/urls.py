@@ -4,7 +4,6 @@ from django.views.generic import View
 from stocktrainer.views import *
 
 urlpatterns = [
-    url(r'^login/$', views.login, name='login'),
     url(r'^index/', views.index_page, name='index_page'),
     url(r'^stock/(?P<name>.*)/(?P<symbol>.*)/(?P<region>.*)$', views.detail, name='detail'),
     url(r'^login/$', views.login_user, name='login'),
