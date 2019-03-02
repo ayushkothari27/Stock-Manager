@@ -384,88 +384,103 @@ def news(request):
     #print(headlines)
     return render(request,'stock/news.html',context)
 
-def load_time_series(request):
+def load_time_series(request,name,symbol):
 
-    response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=WIPRO.NSE&outputsize=full&apikey=FQFTFEI83XPWMSPQ")
-    data = dict(response.json())
-    meta_data = data['Meta Data']
-    time_series = data['Time Series (Daily)']
-    symbol = meta_data['2. Symbol']
-    print(symbol)
-    c = 0
-    dates = []
-    open = []
-    for date,info in time_series.items():
-        dates.append(date)
-        open.append(info['1. open'])
-        c += 1
-        if c>1258:
-            break
-
-
-    print(dates,open)
-
-
-
-    open_ = list(reversed(open_))
-    training_data = np.array(open_).reshape((-1,1))
-    print(training_data.shape)
-    print(training_data)
-
-    scaler = MinMaxScaler()
-    training_data_scaled = scaler.fit_transform(training_data)
-    print(training_data_scaled.shape)
-    print(training_data_scaled)
+    stocks = Stock.objects.all()
+    symbols = [stock.symbol for stock in stocks]
+    if symbol not in symbols:
+        stocks = ['WMT','GOOG','T','MSFT','AAPL','BRK.B','FB','JPM','AMZN','BABA']
+        response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=WMT&outputsize=full&apikey=FQFTFEI83XPWMSPQ")
+        data = dict(response.json())
+        meta_data = data['Meta Data']
+        time_series = data['Time Series (Daily)']
+        symbol = meta_data['2. Symbol']
+        print(symbol)
+        c = 0
+        dates = []
+        open = []
+        for date,info in time_series.items():
+            dates.append(date)
+            open.append(info['1. open'])
+            c += 1
+            if c>1258:
+                break
 
 
-    X_train = []
-    y_train = []
-    for i in range(60,1258):
-        X_train.append(training_data_scaled[i-60:i,0])
-        y_train.append(training_data_scaled[i,0])
-    X_train = np.array(X_train)
-    y_train = np.array(y_train)
-    print(X_train.shape,y_train.shape)
-    X_train = np.reshape(X_train,(X_train.shape[0],X_train.shape[1],1))
+        #print(dates,open)
 
 
-    model = Sequential()
-    model.add(LSTM(units=50,return_sequences=True,input_shape=(X_train.shape[1],1)))
-    model.add(Dropout(0.2))
-    model.add(LSTM(units=50,return_sequences=True))
-    model.add(Dropout(0.2))
-    model.add(LSTM(units=50,return_sequences=True))
-    model.add(Dropout(0.2))
-    model.add(LSTM(units=50,return_sequences=False))
-    model.add(Dropout(0.2))
-    model.add(Dense(units=1))
-    model.compile(optimizer='adam',metrics=['accuracy'],loss='mean_squared_error')
-    model.fit(X_train,y_train,epochs=100,batch_size=32)
+
+        open_ = list(reversed(open_))
+        training_data = np.array(open_).reshape((-1,1))
+        print(training_data.shape)
+        #print(training_data)
+
+        scaler = MinMaxScaler()
+        training_data_scaled = scaler.fit_transform(training_data)
+        print(training_data_scaled.shape)
+        #print(training_data_scaled)
 
 
-    file_name = str(symbol)+'.h5'
-    model.save(file_name)
-    #model.summary()
-
-    inputs = open_[-80:]
-    inputs = np.array(inputs,dtype=np.float32).reshape((-1,1))
-    inputs = scaler.transform(inputs)
-
-
-    X_test = []
-    for i in range(60,80):
-        X_test.append(inputs[i-60:i,0])
-    X_test = np.array(X_test)
-    X_test = np.reshape(X_test,(X_test.shape[0],X_test.shape[1],1))
-
-    predictions = model.predict(X_test)
-    predictions = scaler.inverse_transform(predictions)
-    print(predictions)
+        X_train = []
+        y_train = []
+        for i in range(60,1258):
+            X_train.append(training_data_scaled[i-60:i,0])
+            y_train.append(training_data_scaled[i,0])
+        X_train = np.array(X_train)
+        y_train = np.array(y_train)
+        print(X_train.shape,y_train.shape)
+        X_train = np.reshape(X_train,(X_train.shape[0],X_train.shape[1],1))
 
 
-    historical_data = np.array(open_[-240:],dtype=np.float32)
+        model = Sequential()
+        model.add(LSTM(units=50,return_sequences=True,input_shape=(X_train.shape[1],1)))
+        model.add(Dropout(0.2))
+        model.add(LSTM(units=50,return_sequences=True))
+        model.add(Dropout(0.2))
+        model.add(LSTM(units=50,return_sequences=True))
+        model.add(Dropout(0.2))
+        model.add(LSTM(units=50,return_sequences=False))
+        model.add(Dropout(0.2))
+        model.add(Dense(units=1))
+        model.compile(optimizer='adam',metrics=['accuracy'],loss='mean_squared_error')
+        model.fit(X_train,y_train,epochs=25,batch_size=32)
 
 
+        file_name = str(symbol)+'.h5'
+        model.save(file_name)
+        #model.summary()
+
+        inputs = open_[-80:]
+        inputs = np.array(inputs,dtype=np.float32).reshape((-1,1))
+        inputs = scaler.transform(inputs)
+
+
+        X_test = []
+        for i in range(60,80):
+            X_test.append(inputs[i-60:i,0])
+        X_test = np.array(X_test)
+        X_test = np.reshape(X_test,(X_test.shape[0],X_test.shape[1],1))
+
+        predictions = model.predict(X_test)
+        predictions = scaler.inverse_transform(predictions)
+        print(predictions)
+
+
+        historical_data = np.array(open_[-240:],dtype=np.float32)
+        price = open_[-1]
+        stock = Stock(name=name,symbol=symbol,prediction=predictions,history=historical_data,price=price)
+        stock.save()
+    else:
+        stock = Stock.objects.filter(symbol=symbol)
+
+    name = stock.name
+    symbol = stock.symbol
+    predictions = stock.prediction
+    historical_data = stock.history
+    price = stock.price
+
+    return render(request,'forex.html')
 
 class Article():
     def __init__(self,title,description,url,image_url):

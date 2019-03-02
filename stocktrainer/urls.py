@@ -18,4 +18,6 @@ urlpatterns = [
     url(r'^forex_detail/(?P<forex_id>[0-9]+)/$',views.forex_detail,name='forex_detail'),
     url(r'^watchlist/(\d+)/$', views.watchlist, name='watchlist'),
     url(r'^watchlist-delete/(?P<pk>[0-9]+)/$', WatchlistDeleteView.as_view(), name='watchlist_delete'),
+    url(r'^time_series/(?P<name>.*/(?P<symbol>.*/(?P<region>.*/$',views.load_time_series,nam)
+    #url(r'^time_series/$',views.time_series_data,name='time_series_data')
 ]
