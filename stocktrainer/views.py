@@ -10,8 +10,15 @@ from django.contrib.auth import logout as django_logout
 import requests
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import DeleteView
+from recombee_api_client.api_client import RecombeeClient
+from recombee_api_client.api_requests import AddItemProperty, SetItemValues, AddPurchase
+from recombee_api_client.api_requests import RecommendItemsToItem, Batch, ResetDatabase
+from recombee_api_client.api_requests import *
+import random
 
 API_KEY = 'FQFTFEI83XPWMSPQ'
+
+client = RecombeeClient('stockmanager', 'Y9UsOCsqPBetEKgFtmatmcdBeifBwcFqgXTAYhVpu5hEPBh31DmQ18JC5w0hqqbb')
 
 def header_view(request):
     print("hey")
@@ -380,3 +387,36 @@ def watchlist(request,id):
         profile = Profile.objects.get(user=user)
         redirect_url = '/watchlist/' + str(user.id)
         return HttpResponseRedirect(redirect_url)
+
+def recommend(request):    #database schema
+    client.send(AddItemProperty('range', 'double'))
+    client.send(AddItemProperty('region', 'string'))
+
+def initial_recombee(request): #populate recombee initially
+    stock = Stock.objects.all()
+    requests = []
+    for i in range(len(stock)):
+        name = stock[i].name
+        price = stock[i].price
+        region = stock[i].region
+        requests.append(SetItemValues(
+            name, #itemId
+            #values:
+            {
+              'range': price,
+              'region': region
+            },
+        cascade_create=True))   # Use cascadeCreate for creating item with given itemId if it doesn't exist
+
+    client.send(Batch(requests))
+
+def recombee_user(request):  #recombee user create
+    requests = []
+    requests.append(AddPurchase(2, "RMA", cascade_create=True))
+    requests.append(AddPurchase(2, "CHELASEA", cascade_create=True))
+
+    client.send(Batch(requests))
+
+def data_from_recombee(request):
+    xyz = client.send(RecommendItemsToUser(2, 2))
+    print(xyz)
