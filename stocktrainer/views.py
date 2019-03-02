@@ -39,17 +39,17 @@ def crypto(request):
 
 @login_required(login_url='/login/')
 def index_page(request):
-    #save_crypto_data()
-    #header_view(request)
+    fenil_key = "63XAFJTFC5HF4OE9"
     if(request.method=='GET' or (request.method=='POST' and 'refresh' in request.POST)):
-        all_stocks=Stock.objects.all()
+        res=Stock.objects.all()
     if request.method=='POST' and 'search' in request.POST:
-        filter=request.POST.get('filter','')
-        all_stocks=Stock.objects.filter(name__startswith=filter)
+        search = request.POST.get('filter','')
+        res = requests.get("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + search + "&apikey=" + fenil_key)
+        print(res)
     user = request.user
     list_of_stocks = user.entries.all()
 
-    return render(request, 'stock/index.html', {'all_stocks':all_stocks,'watch_stocks':list_of_stocks})
+    return render(request, 'stock/index.html', {'all_stocks':res,'watch_stocks':list_of_stocks})
 
 
 @login_required(login_url='/login/')
@@ -71,12 +71,12 @@ def crypto_detail(request, crypto_id):
     high_data = []
     volume_data = []
     month = []
-    
+
     try:
         daily_dicts = daily_data_30_days["Time Series (Digital Currency Daily)"]
         dates = list(daily_dicts.keys())
 
-    
+
         print(daily_dicts[dates[0]]["1a. open (USD)"])
         for i in range(30):
             month.append(dates[i])
@@ -93,7 +93,7 @@ def crypto_detail(request, crypto_id):
     '''
     for day in month:
 	    day = '"'+str(day)+'"'
-        
+
 	    new_month.append(day)
     print(new_month)
     '''
@@ -327,13 +327,13 @@ def news(request):
     articles_json = data['articles']
     bit_articles_json = bit_data['articles']
     articles_json += bit_articles_json
-    
+
     articles = []
-    
+
     for article in articles_json:
         articles.append(Article(title = article['title'], description = article['description'],url = article['url'],image_url=article['urlToImage']))
-        
-        
+
+
     context = {'articles':articles}
     #print(articles)
     #print(headlines)
@@ -347,6 +347,6 @@ class Article():
         self.url = url
         self.image_url = image_url
 
-    
+
     def __str__(self):
         return self.url
