@@ -10,7 +10,7 @@ from django.contrib.auth import logout as django_logout
 import requests
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import DeleteView
-from print import print
+from pprint import pprint
 
 API_KEY = 'FQFTFEI83XPWMSPQ'
 
