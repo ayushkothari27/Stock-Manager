@@ -157,7 +157,7 @@
             </a>
           </div>
         </td>
-        {% if not forloop.counter0|divisibleby:2 %}</tr>{% endif %}
+        <!-- {% if not forloop.counter0|divisibleby:2 %}</tr>{% endif %} -->
       {% endfor %}
     </table>
   </form>
@@ -170,7 +170,7 @@
       <div class="card-body">
         <h5 class="card-title">{{name}}</h5>
         <p class="card-text">Symbol: {{symbol}} <br />
-          Region: {{region}}
+          Region: {{region}}<br>
           Currency: {{currency}}
         </p>
         <a href="#" class="btn btn-primary">View Details</a>
@@ -199,19 +199,19 @@
 </table>
 </div>
 <script>
-  var fixed = false;
-  $(document).scroll(function () {
-    if ($(this).scrollTop() > 378) {
-      if (!fixed) {
-        fixed = true;
-        $('#search').css({ position: 'fixed', top: 0, width: '90%' });
-      }
-    } else {
-      if (fixed) {
-        fixed = false;
-        $('#search').css({ position: 'relative', top: 'auto', width: '100%' });
-      }
-    }
-  });
+  // var fixed = false;
+  // $(document).scroll(function () {
+  //   if ($(this).scrollTop() > 378) {
+  //     if (!fixed) {
+  //       fixed = true;
+  //       $('#search').css({ position: 'fixed', top: 0, width: '90%' });
+  //     }
+  //   } else {
+  //     if (fixed) {
+  //       fixed = false;
+  //       $('#search').css({ position: 'relative', top: 'auto', width: '100%' });
+  //     }
+  //   }
+  // });
 </script>
 {% endblock %}
