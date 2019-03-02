@@ -44,6 +44,7 @@ asecret="45c3EKZBxdI86ssyoR3gypx0ffIZGFyjlgcsznft2SToD"
 
 
 API_KEY = 'FQFTFEI83XPWMSPQ'
+fenil_key = "63XAFJTFC5HF4OE9"
 
 client = RecombeeClient('stockmanager', 'Y9UsOCsqPBetEKgFtmatmcdBeifBwcFqgXTAYhVpu5hEPBh31DmQ18JC5w0hqqbb')
 
@@ -74,7 +75,6 @@ def crypto(request):
 
 @login_required(login_url='/login/')
 def index_page(request):
-    fenil_key = "63XAFJTFC5HF4OE9"
     # Recombee results
 
     # Kushal's code
@@ -162,8 +162,6 @@ def crypto_detail(request, crypto_id):
     try:
         daily_dicts = daily_data_30_days["Time Series (Digital Currency Daily)"]
         dates = list(daily_dicts.keys())
-
-
         print(daily_dicts[dates[0]]["1a. open (USD)"])
         for i in range(30):
             month.append(dates[i])
@@ -246,14 +244,12 @@ def crypto_detail(request, crypto_id):
         'volume_data':volume_data,
         'month':new_month
     }
-
     return render(request,'stock/crypto_detail.html',context)
 
 
 @login_required(login_url='/login/')
-def detail(request, stock_id):
-    stock=get_object_or_404(Stock, id=stock_id)
-    cp=requests.get('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+stock.symbol+'&interval=1min&apikey='+API_KEY)
+def detail(request, name, symbol, region):
+    cp=requests.get('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+symbol+'&interval=1min&apikey='+fenil_key)
     dict_cp=dict(cp.json())
     print(dict_cp)
     dict_cp=dict_cp['Time Series (1min)']
@@ -264,7 +260,7 @@ def detail(request, stock_id):
         vol.append(float(dict_cp[i]["5. volume"]))
     current_price=dict_cp[list(dict_cp.keys())[0]]['4. close']
     dict_of_prices={}
-    data=requests.get('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+stock.symbol+'&apikey='+API_KEY)
+    data=requests.get('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+symbol+'&apikey='+fenil_key)
     print(data)
     dict_of_prices=dict(data.json())
     date1=dict_of_prices['Time Series (Daily)'].keys()
@@ -278,7 +274,6 @@ def detail(request, stock_id):
     close=[]
     volume=[]
     user = request.user
-    list_of_stocks = user.entries.all()
     for i in date:
         open.append(float(dict_of_prices['Time Series (Daily)'][i]["1. open"]))
         high.append(float(dict_of_prices['Time Series (Daily)'][i]["2. high"]))
@@ -286,8 +281,11 @@ def detail(request, stock_id):
         close.append(float(dict_of_prices['Time Series (Daily)'][i]["4. close"]))
         volume.append(float(dict_of_prices['Time Series (Daily)'][i]["5. volume"]))
     message=""
+    print(request.method * 100)
     if request.method=='POST' and 'add' in request.POST:
         if request.user.is_authenticated():
+            stock.save()
+            stock = Stock(name = name, symbol = symbol, region = region, price = current_price)
             watch = Watch(user=request.user, stock=stock)
             watch.save()
             message="Added To WatchList"
@@ -295,6 +293,13 @@ def detail(request, stock_id):
             message="Please Login to Continue"
             return redirect('/login')
     if request.method=='POST' and 'buy' in request.POST:
+        print("aaaaya"*10)
+        stock = Stock.objects.filter(symbol = symbol)
+        if len(stock)==0:
+            stock = Stock(name = name, symbol = symbol, region = region, price = current_price)
+            stock.save()
+        else:
+            stock = stock[0]
         if request.user.is_authenticated:
             quantity = int(request.POST.get('quantity', ''))
             profile = Profile.objects.get(user=request.user)
@@ -302,7 +307,7 @@ def detail(request, stock_id):
             if(profile.balance < x):
                 message="Insufficient Balance"
             else:
-                bought = Buy(user=request.user, stock=stock,quantity=quantity, price=float(current_price))
+                bought = Buy(user=request.user, stock=stock, quantity=quantity, price=float(current_price))
                 bought.save()
                 profile.balance = profile.balance-x
                 profile.save()
@@ -314,6 +319,7 @@ def detail(request, stock_id):
         if request.user.is_authenticated():
             quantity = int(request.POST.get('squantity', ''))
             q = quantity
+            stock = Stock.objects.get(symbol=symbol)
             ast = Buy.objects.filter(user=request.user, stock=stock)
             tq = 0
             for i in ast:
@@ -339,7 +345,13 @@ def detail(request, stock_id):
             return redirect('/login')
 
     context={
-        'stock': stock,
+        'last_day_low': low[0],
+        'last_day_high': high[0],
+        'last_day_open': open[0],
+        'last_day_close': close[0],
+        'name': name,
+        'symbol': symbol,
+        'region': region,
         'current_price': current_price,
         'date': date,
         'open': open,
@@ -349,8 +361,7 @@ def detail(request, stock_id):
         'volume': volume,
         'message': message,
         'ap': ap,
-        'vol': vol,
-        'watch_stocks':list_of_stocks
+        'vol': vol
     }
     return render(request, 'stock/detail.html', context)
 
@@ -567,18 +578,11 @@ class WatchlistDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 @login_required
-def watchlist(request,id):
-    id = int(id)
-    if id == request.user.id:
-        user = User.objects.get(id=id)
-        watch_list = Watch.objects.filter(user=user)
-        print(watch_list)
-        return render(request, 'stock/watchlist.html',{'watch_list':watch_list,'id':id})
-    else:
-        user = request.user
-        profile = Profile.objects.get(user=user)
-        redirect_url = '/watchlist/' + str(user.id)
-        return HttpResponseRedirect(redirect_url)
+def watchlist(request):
+    user = request.user
+    watch_list = Watch.objects.filter(user=user)
+    print(watch_list)
+    return render(request, 'stock/watchlist.html',{'watch_list':watch_list})
 
 def recommend(request):    #database schema
     client.send(AddItemProperty('range', 'double'))
