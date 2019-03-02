@@ -372,6 +372,7 @@ def register(request):
         FirstName = request.POST.get('fname', '')
         LastName = request.POST.get('lname', '')
         email = request.POST.get('email', '')
+        print(username,FirstName,LastName,email)
         user = User.objects.create_user(username=username, email=email, first_name=FirstName, last_name=LastName)
         user.set_password(password)
         user.save()
