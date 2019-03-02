@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^recombee_user/$', views.recombee_user, name='recombee_user'),
     url(r'^data_from_recombee/$', views.data_from_recombee, name='data_from_recombee'),
     url(r'^watchlist-delete/(?P<pk>[0-9]+)/$', WatchlistDeleteView.as_view(), name='watchlist_delete'),
+    url(r'^bot/(?P<name>.*)/$', views.bot, name='bot'),
 ]

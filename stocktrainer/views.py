@@ -16,6 +16,23 @@ from recombee_api_client.api_requests import RecommendItemsToItem, Batch, ResetD
 from recombee_api_client.api_requests import *
 import random
 from pprint import pprint
+from tweepy import Stream
+from tweepy import OAuthHandler
+from tweepy.streaming import StreamListener
+import time
+import json
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+nltk.download('vader_lexicon')
+sid = SentimentIntensityAnalyzer()
+
+# Create your views here.
+
+
+ckey="7h38tcEM8IO8id2htVXO9NDoW"
+csecret="A9zfCDyM8mx7P2LBaC9rkCIgoOV3P71ZCajKbn2l0tt4EnkObk"
+atoken="2611228746-JSr7EbtntCKlcAjZl5PkvVFxq8sYyzhamjvYYXg"
+asecret="45c3EKZBxdI86ssyoR3gypx0ffIZGFyjlgcsznft2SToD"
 
 API_KEY = 'FQFTFEI83XPWMSPQ'
 
@@ -436,3 +453,112 @@ def recombee_user(request):  #recombee user create
 def data_from_recombee(request):
     xyz = client.send(RecommendItemsToUser(2, 2))
     print(xyz)
+
+
+def bot(request,name):
+    print("Hi")
+    if request.method == 'POST':
+            global sign
+            reply = request.POST.get('reply', '')
+            print(reply)
+            global list_of_tweets
+            global i
+            global pos_count
+            flag = True
+            twitterStream = Stream(auth, listener())
+            twitterStream.filter(track=[reply])
+            print(list_of_tweets)
+            block = []
+            for j in range(len(list_of_tweets)):
+                url = "https://api.twitter.com/1.1/statuses/oembed.json"
+                params = dict(
+                id = list_of_tweets[j]
+                )
+                resp = requests.get(url=url, params=params)
+                data = resp.json()
+                try:
+                    aayu = data["html"].replace("<script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>","")
+                    block.append(aayu)
+                except Exception as e:
+                    pass
+            if pos_count>5:
+                sentiment = "The general sentiment of people is positive"
+            elif pos_count>3:
+                sentiment = "The general sentiment of people is nuetral"
+            else:
+                sentiment = "The general sentiment of people is negative"
+            list_of_tweets = []
+            i = 0
+            pos_count = 0
+            return render(request, 'stock/bot.html', {'reply':reply, 'flag':flag,'block':block, 'sentiment':sentiment})
+    else:
+            global sign
+            reply = name
+            print(reply)
+            flag = True
+            twitterStream = Stream(auth, listener())
+            twitterStream.filter(track=[reply])
+            print(list_of_tweets)
+            block = []
+            for j in range(len(list_of_tweets)):
+                url = "https://api.twitter.com/1.1/statuses/oembed.json"
+                params = dict(
+                id = list_of_tweets[j]
+                )
+                resp = requests.get(url=url, params=params)
+                data = resp.json()
+                try:
+                    aayu = data["html"].replace("<script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>","")
+                    block.append(aayu)
+                except Exception as e:
+                    pass
+            if pos_count>5:
+                sentiment = "The general sentiment of people is positive"
+            elif pos_count>3:
+                sentiment = "The general sentiment of people is nuetral"
+            else:
+                sentiment = "The general sentiment of people is negative"
+            list_of_tweets = []
+            i = 0
+            pos_count = 0
+            return render(request, 'stock/bot.html', {'reply':reply, 'flag':flag,'block':block, 'sentiment':sentiment})
+
+
+i = 0
+list_of_tweets = []
+pos_count = 0
+
+auth = OAuthHandler(ckey, csecret)
+auth.set_access_token(atoken, asecret)
+
+class listener(StreamListener):
+    def on_data(self, data):
+        global i
+        global list_of_tweets
+        global pos_count
+        data = json.loads(data)
+        try:
+            if data["id"] != ' ':
+                print(data["text"])
+                ss = sid.polarity_scores(data["text"])
+                if ss['compound']>=0:
+                    list_of_tweets.append(data["id"])
+                    pos_count = pos_count + 1
+                    i = i + 1
+                elif ss['compound']<=0:
+                    list_of_tweets.append(data["id"])
+                    i = i + 1
+                elif sign == "":
+                    list_of_tweets.append(data["id"])
+                    print("signlessssssss")
+                    i = i + 1
+        except Exception as e:
+            pass
+        if i<10:
+            return True
+        else:
+            return False
+
+    def on_error(self, status_code):
+        if status_code == 420:
+            return False
