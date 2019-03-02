@@ -40,17 +40,17 @@ def crypto(request):
 
 @login_required(login_url='/login/')
 def index_page(request):
-    #save_crypto_data()
-    #header_view(request)
+    fenil_key = "63XAFJTFC5HF4OE9"
     if(request.method=='GET' or (request.method=='POST' and 'refresh' in request.POST)):
-        all_stocks=Stock.objects.all()
+        res=Stock.objects.all()
     if request.method=='POST' and 'search' in request.POST:
-        filter=request.POST.get('filter','')
-        all_stocks=Stock.objects.filter(name__startswith=filter)
+        search = request.POST.get('filter','')
+        res = requests.get("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + search + "&apikey=" + fenil_key)
+        print(res)
     user = request.user
     list_of_stocks = user.entries.all()
 
-    return render(request, 'stock/index.html', {'all_stocks':all_stocks,'watch_stocks':list_of_stocks})
+    return render(request, 'stock/index.html', {'all_stocks':res,'watch_stocks':list_of_stocks})
 
 
 @login_required(login_url='/login/')
