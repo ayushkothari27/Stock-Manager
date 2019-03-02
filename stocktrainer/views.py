@@ -7,8 +7,13 @@ from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as django_logout
-import requests
+import matplotlib.pyplot as plt
+import tensorflow as tf
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
+from keras.models import Sequential,load_model
+from keras.layers import Dense,LSTM,Dropout
 
 API_KEY = 'FQFTFEI83XPWMSPQ'
 
@@ -52,6 +57,43 @@ def index_page(request):
     return render(request, 'stock/index.html', {'all_stocks':all_stocks,'watch_stocks':list_of_stocks})
 
 
+def forex_detail(request,forex_id):
+    #     data = dict(response.json())['Realtime Currency Exchange Rate']
+    #     name = data['2. From_Currency Name']
+    #     symbol = data['1. From_Currency Code']
+    #     exchange_rate = data['5. Exchange Rate']
+    forex = get_object_or_404(Forex,id=forex_id)
+    response = requests.get('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency='+forex.symbol+'&to_currency=NZD&apikey=22318c0edb3f412fb605062a091e4239')
+    data = dict(response.json())['Realtime Currency Exchange Rate']
+    ex_rate = data['5. Exchange Rate']
+
+    daily_30_days_data = requests.get('https://www.alphavantage.co/query?function=FX_DAILY&from_symbol='+forex.symbol+'&to_symbol=USD&apikey='+API_KEY)
+    daily_30_days_data = dict(daily_30_days_data.json())
+    open_data = []
+    close_data = []
+    low_data = []
+    high_data = []
+    #print(daily_30_days_data)
+    try:
+        time_series_data = daily_30_days_data['Time Series FX (Daily)']
+        dates = list(time_series_data.keys())
+        #print(dates)
+        #print(time_series_data[dates[0]]['1. open'])
+        for i in range(30):
+
+            open_data.append(float(time_series_data[dates[i]]['1. open']))
+            close_data.append(float(time_series_data[dates[i]]['4. close']))
+            high_data.append(float(time_series_data[dates[i]]['2. high']))
+            low_data.append(float(time_series_data[dates[i]]['3. low']))
+    except Exception as e:
+        print('Error')
+
+    print(open_data)
+    context={'exchange':ex_rate,'open':open_data,'close':close_data,'high':high_data,'low':low_data}
+    return render(request,'stock/forex_detail.html',context=context)
+
+
+
 @login_required(login_url='/login/')
 def crypto_detail(request, crypto_id):
     crypto = get_object_or_404(Crypto, id=crypto_id)
@@ -71,12 +113,12 @@ def crypto_detail(request, crypto_id):
     high_data = []
     volume_data = []
     month = []
-    
+
     try:
         daily_dicts = daily_data_30_days["Time Series (Digital Currency Daily)"]
         dates = list(daily_dicts.keys())
 
-    
+
         print(daily_dicts[dates[0]]["1a. open (USD)"])
         for i in range(30):
             month.append(dates[i])
@@ -93,7 +135,7 @@ def crypto_detail(request, crypto_id):
     '''
     for day in month:
 	    day = '"'+str(day)+'"'
-        
+
 	    new_month.append(day)
     print(new_month)
     '''
@@ -327,17 +369,99 @@ def news(request):
     articles_json = data['articles']
     bit_articles_json = bit_data['articles']
     articles_json += bit_articles_json
-    
+
     articles = []
-    
+
     for article in articles_json:
         articles.append(Article(title = article['title'], description = article['description'],url = article['url'],image_url=article['urlToImage']))
-        
-        
+
+
     context = {'articles':articles}
     #print(articles)
     #print(headlines)
     return render(request,'stock/news.html',context)
+
+def load_time_series(request):
+
+    response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=WIPRO.NSE&outputsize=full&apikey=FQFTFEI83XPWMSPQ")
+    data = dict(response.json())
+    meta_data = data['Meta Data']
+    time_series = data['Time Series (Daily)']
+    symbol = meta_data['2. Symbol']
+    print(symbol)
+    c = 0
+    dates = []
+    open = []
+    for date,info in time_series.items():
+        dates.append(date)
+        open.append(info['1. open'])
+        c += 1
+        if c>1258:
+            break
+
+
+    print(dates,open)
+
+
+
+    open_ = list(reversed(open_))
+    training_data = np.array(open_).reshape((-1,1))
+    print(training_data.shape)
+    print(training_data)
+
+    scaler = MinMaxScaler()
+    training_data_scaled = scaler.fit_transform(training_data)
+    print(training_data_scaled.shape)
+    print(training_data_scaled)
+
+
+    X_train = []
+    y_train = []
+    for i in range(60,1258):
+        X_train.append(training_data_scaled[i-60:i,0])
+        y_train.append(training_data_scaled[i,0])
+    X_train = np.array(X_train)
+    y_train = np.array(y_train)
+    print(X_train.shape,y_train.shape)
+    X_train = np.reshape(X_train,(X_train.shape[0],X_train.shape[1],1))
+
+
+    model = Sequential()
+    model.add(LSTM(units=50,return_sequences=True,input_shape=(X_train.shape[1],1)))
+    model.add(Dropout(0.2))
+    model.add(LSTM(units=50,return_sequences=True))
+    model.add(Dropout(0.2))
+    model.add(LSTM(units=50,return_sequences=True))
+    model.add(Dropout(0.2))
+    model.add(LSTM(units=50,return_sequences=False))
+    model.add(Dropout(0.2))
+    model.add(Dense(units=1))
+    model.compile(optimizer='adam',metrics=['accuracy'],loss='mean_squared_error')
+    model.fit(X_train,y_train,epochs=100,batch_size=32)
+
+
+    file_name = str(symbol)+'.h5'
+    model.save(file_name)
+    #model.summary()
+
+    inputs = open_[-80:]
+    inputs = np.array(inputs,dtype=np.float32).reshape((-1,1))
+    inputs = scaler.transform(inputs)
+
+
+    X_test = []
+    for i in range(60,80):
+        X_test.append(inputs[i-60:i,0])
+    X_test = np.array(X_test)
+    X_test = np.reshape(X_test,(X_test.shape[0],X_test.shape[1],1))
+
+    predictions = model.predict(X_test)
+    predictions = scaler.inverse_transform(predictions)
+    print(predictions)
+
+
+    historical_data = np.array(open_[-240:],dtype=np.float32)
+
 
 
 class Article():
@@ -347,6 +471,28 @@ class Article():
         self.url = url
         self.image_url = image_url
 
-    
+
     def __str__(self):
         return self.url
+
+
+
+
+
+def forex(request):
+
+
+    queryset = Forex.objects.all()
+    #currencies = ['RUB','INR','BRL','ZAR']
+    # for curr in currencies:
+    #     response = requests.get('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={0}&to_currency=USD&apikey=22318c0edb3f412fb605062a091e4239'.format(curr))
+    #     #print(dict(response.json()))
+    #     data = dict(response.json())['Realtime Currency Exchange Rate']
+    #     name = data['2. From_Currency Name']
+    #     symbol = data['1. From_Currency Code']
+    #     exchange_rate = data['5. Exchange Rate']
+    #     #print(name,symbol,exchange_rate)
+    #     forex = Forex(name=name,symbol=symbol,exchange_rate=exchange_rate)
+    #     forex.save()
+    context = {'forex':queryset}
+    return render(request,'stock/forex.html',context=context)

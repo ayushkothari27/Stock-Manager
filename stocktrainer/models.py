@@ -16,10 +16,12 @@ class Stock(models.Model):
     website = models.CharField(max_length=500, default="")
     sector = models.CharField(max_length=500, default="")
     industry = models.CharField(max_length=500, default="")
-    last_annual_total_assets = models.BigIntegerField(default=0)
-    last_annual_revenue = models.BigIntegerField(default=0)
-    last_annual_net_income = models.BigIntegerField(default=0)
-    last_annual_eps = models.FloatField(default=0)
+
+
+    # last_annual_total_assets = models.BigIntegerField(default=0)
+    # last_annual_revenue = models.BigIntegerField(default=0)
+    # last_annual_net_income = models.BigIntegerField(default=0)
+    # last_annual_eps = models.FloatField(default=0)
 
     def __str__(self):
         return self.name
@@ -35,11 +37,11 @@ class Watch(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='entries')
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE, related_name='stock')
     added_on = models.DateField(("Date"), default=datetime.date.today, blank=True)
-    
+
 
     def __str__(self):
         return self.stock.name
-        
+
 
 class Buy(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bentries')
@@ -50,3 +52,12 @@ class Buy(models.Model):
 
     def __str__(self):
         return self.stock.name
+
+class Forex(models.Model):
+    name = models.CharField(max_length=100,default="")
+    symbol = models.CharField(max_length=100,default="")
+    exchange_rate = models.CharField(max_length=100,default="")
+
+
+    def __str__(self):
+        return self.name
