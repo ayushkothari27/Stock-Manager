@@ -71,12 +71,12 @@ def crypto_detail(request, crypto_id):
     high_data = []
     volume_data = []
     month = []
-    
+
     try:
         daily_dicts = daily_data_30_days["Time Series (Digital Currency Daily)"]
         dates = list(daily_dicts.keys())
 
-    
+
         print(daily_dicts[dates[0]]["1a. open (USD)"])
         for i in range(30):
             month.append(dates[i])
@@ -93,7 +93,7 @@ def crypto_detail(request, crypto_id):
     '''
     for day in month:
 	    day = '"'+str(day)+'"'
-        
+
 	    new_month.append(day)
     print(new_month)
     '''
@@ -327,13 +327,13 @@ def news(request):
     articles_json = data['articles']
     bit_articles_json = bit_data['articles']
     articles_json += bit_articles_json
-    
+
     articles = []
-    
+
     for article in articles_json:
         articles.append(Article(title = article['title'], description = article['description'],url = article['url'],image_url=article['urlToImage']))
-        
-        
+
+
     context = {'articles':articles}
     #print(articles)
     #print(headlines)
@@ -347,6 +347,6 @@ class Article():
         self.url = url
         self.image_url = image_url
 
-    
+
     def __str__(self):
         return self.url
