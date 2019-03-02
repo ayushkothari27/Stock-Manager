@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% include 'stock/header.html' %}
+{% block content1 %}
+{% endblock %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<style>
+    td, tr {
+        border: none;
+        border-top-width: 0px; 
+    }
+    tr {
+        height: 60px;
+    }
+    td {
+        width: 250px;
+    }
+    table {
+        font-size: 22px;
+        margin:5px 0;
+    }
+</style>
+
+<div id="maincontent" style="background-color:#eee;">
+    <div style="margin-left:160px; margin-right: 160px; margin-top: 20px;">
+        <button type="submit" class="btn btn-primary btn-lg" name="add" disabled style="position: absolute; left: 180px; top: 80px; width: 150px; height: 80px; font-size: 45px; background-color: #004084">{{stock.symbol}}</button>
+        <button type="submit" class="btn btn-primary btn-lg" name="add" disabled style="position: absolute; right: 180px; top: 80px; width: 150px; height: 80px; font-size: 30px; background-color: #004084;">{{current_price}}</button>
+        <div style="color: #004084; margin-top:15px; text-align: center; background-color: #fff; padding: 40px; margin-bottom: 5px">
+            <h1>{{stock.name}}</h1><br />
+            <span style="font-size:20px;"><a href="{{stock.website}}">{{stock.website}}</a> | {{stock.industry}} |
+                {{stock.sector}}</span>
+        </div>
+        <div style="width:600px; margin: 0px auto;">
+            <!-- <form method='POST'>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 40px" name="add">Add To WatchList</button>
+            <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 40px" name="buy" data-toggle="modal" data-target="#buyModal">Buy
+                Stocks</button>
+            <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 40px" name="sell" data-toggle="modal" data-target="#sellModal">Sell
+                Stocks</button>
+        </form> -->
+            <!-- <form method='POST'>
+            {% csrf_token %}
+            <div style="width: 600px">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="quantity" placeholder="Enter total Number Of Stocks to Buy:"
+                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" name="buy">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </form>
+        <form method='POST'>
+            {% csrf_token %}
+            <div style="width: 600px">
+                <div class="input-group">
+                    <input type="text" name="squantity" class="form-control" placeholder="Enter total Number Of Stocks to Sell:"
+                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" name="sell">Sell</button>
+                    </div>
+                </div>
+            </div>
+        </form> -->
+            {{message}}
+        </div>
+
+        <!--Modals-->
+        <div class="modal fade" id="buyModal" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Buy Stocks</h4>
+                    </div>
+                    <form method='POST'>
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <input type="text" class="form-control" name="quantity" placeholder="Enter total Number Of Stocks to Buy:"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" name="buy" class="btn btn-default" >Buy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="sellModal" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Sell Stocks</h4>
+                    </div>
+                    <form method='POST'>
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <input type="text" class="form-control" name="squantity" placeholder="Enter total Number Of Stocks to Sell:"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" name="sell" class="btn btn-default" >Sell</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div style="width: 100%">
+            <table style="background-color:#fff; width: 100%; margin-top: 0px;">
+                <tbody>
+                    <tr>
+                        <td style="width: 30%; padding-left: 10%">Last Annual Total Assets: </td>
+                        <td style="width: 70%; padding-left: 20px">{{stock.last_annual_total_assets}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%; padding-left: 10%">Last Annual Net Income: </td>
+                        <td style="width: 70%; padding-left: 20px">{{stock.last_annual_net_income}} INR</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%; padding-left: 10%">Last Annual Revenue: </td>
+                        <td style="width: 70%; padding-left: 20px">{{stock.last_annual_revenue}} INR</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%; padding-left: 10%">Last Annual EPS: </td>
+                        <td style="width: 70%; padding-left: 20px">{{stock.last_annual_eps}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="position: absolute; top: 270px; right: 220px;">
+            <form method='POST'>
+            {% csrf_token %}
+                       <button type="submit" class="btn btn-primary btn-lg"
+                                style="font-size: 20px; white-space: normal; margin-right: 40px; width: 200px; height: 50px;"
+                                name="add">Add To WatchList</button>
+                       
+            </form>
+            <br />
+           <button type="button" class="btn btn-success btn-lg"
+                                style="font-size: 20px; margin-right: 40px; width: 200px; height: 50px;"
+                                data-toggle="modal" data-target="#buyModal">Buy Stocks</button>
+            <br /><br />
+            <button type="button" class="btn btn-danger btn-lg"
+                                style="font-size: 20px; margin-right: 40px; width: 200px; height: 50px;"
+                                data-toggle="modal" data-target="#sellModal">Sell Stocks</button>
+            </div>
+        </div>
+
+        <div class="accordion" id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne"
+                            aria-expanded="false" aria-controls="collapseOne">
+                            Graph Of Last 30 day Prices
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <div style="width: 550px; height: 580px;">
+                            <div class="chart-container" style="position: relative; height:60vh; width:75vw">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo"
+                            aria-expanded="false" aria-controls="collapseTwo">
+                            Graph Of Last Minute Prices:
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                    <div class="card-body">
+                        <div style="width: 550px; height: 580px;">
+                            <div class="chart-container" style="position: absolute; height:60vh; width:75vw">
+                                <canvas id="myChart3"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingThree">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
+                            aria-expanded="false" aria-controls="collapseThree">
+                            Graph Of Volume in Last-30 Days
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
+                    <div class="card-body">
+                        <div style="width: 550px; height: 580px">
+                            <div class="chart-container" style="position: absolute; height:60vh; width:75vw">
+                                <canvas id="myChart2"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+var x = {{open}}
+var ctx = document.getElementById("myChart").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['"2018-04-03"', '"2018-04-02"', '"2018-03-29"', '"2018-03-28"', '"2018-03-27"', '"2018-03-26"', '"2018-03-23"', '"2018-03-22"', '"2018-03-21"', '"2018-03-20"', '"2018-03-19"', '"2018-03-16"', '"2018-03-15"', '"2018-03-14"', '"2018-03-13"', '"2018-03-12"', '"2018-03-09"', '"2018-03-08"', '"2018-03-07"', '"2018-03-06"', '"2018-03-05"', '"2018-03-02"', '"2018-03-01"', '"2018-02-28"', '"2018-02-27"', '"2018-02-26"', '"2018-02-23"', '"2018-02-22"', '"2018-02-21"', '"2018-02-20"', '"2018-02-16"', '"2018-02-15"', '"2018-02-14"', '"2018-02-13"', '"2018-02-12"', '"2018-02-09"', '"2018-02-08"', '"2018-02-07"', '"2018-02-06"', '"2018-02-05"', '"2018-02-02"', '"2018-02-01"', '"2018-01-31"', '"2018-01-30"', '"2018-01-29"', '"2018-01-26"', '"2018-01-25"', '"2018-01-24"', '"2018-01-23"', '"2018-01-22"', '"2018-01-19"', '"2018-01-18"', '"2018-01-17"', '"2018-01-16"', '"2018-01-12"', '"2018-01-11"', '"2018-01-10"', '"2018-01-09"', '"2018-01-08"', '"2018-01-05"', '"2018-01-04"', '"2018-01-03"', '"2018-01-02"', '"2017-12-29"', '"2017-12-28"', '"2017-12-27"', '"2017-12-26"', '"2017-12-22"', '"2017-12-21"', '"2017-12-20"', '"2017-12-19"', '"2017-12-18"', '"2017-12-15"', '"2017-12-14"', '"2017-12-13"', '"2017-12-12"', '"2017-12-11"', '"2017-12-08"', '"2017-12-07"', '"2017-12-06"', '"2017-12-05"', '"2017-12-04"', '"2017-12-01"', '"2017-11-30"', '"2017-11-29"', '"2017-11-28"', '"2017-11-27"', '"2017-11-24"', '"2017-11-22"', '"2017-11-21"', '"2017-11-20"', '"2017-11-17"', '"2017-11-16"', '"2017-11-15"', '"2017-11-14"', '"2017-11-13"', '"2017-11-10"', '"2017-11-09"', '"2017-11-08"', '"2017-11-07"'],
+        datasets: [{
+            label: 'Opening Price',
+            data: {{open}},
+            backgroundColor: [
+                //'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 255, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+            ],
+            borderWidth: 1
+        },
+        {
+            label: 'Closing Price',
+            data: {{close}},
+            backgroundColor: [
+                //'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 255, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+            ],
+            borderWidth: 1
+        },
+        {
+            label: 'Highest Price',
+            data: {{high}},
+            backgroundColor: [
+                'rgba(255, 255, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 206, 86, 1)',
+            ],
+            borderWidth: 1
+        },
+        {
+            label: 'Lowest Price',
+            data: {{low}},
+            backgroundColor: [
+                //'rgba(75, 192, 192, 0.2)',
+                //'rgba(153, 102, 255, 0.2)',
+                //'rgba(255, 159, 64, 0.2)'
+                'rgba(255, 255, 255, 0.2)',
+            ],
+            borderColor: [
+                //'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false
+                }
+            }]
+        },
+    }
+});
+</script>
+
+<script>
+var x = {{open}}
+var ctx = document.getElementById("myChart2").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['"2018-04-03"', '"2018-04-02"', '"2018-03-29"', '"2018-03-28"', '"2018-03-27"', '"2018-03-26"', '"2018-03-23"', '"2018-03-22"', '"2018-03-21"', '"2018-03-20"', '"2018-03-19"', '"2018-03-16"', '"2018-03-15"', '"2018-03-14"', '"2018-03-13"', '"2018-03-12"', '"2018-03-09"', '"2018-03-08"', '"2018-03-07"', '"2018-03-06"', '"2018-03-05"', '"2018-03-02"', '"2018-03-01"', '"2018-02-28"', '"2018-02-27"', '"2018-02-26"', '"2018-02-23"', '"2018-02-22"', '"2018-02-21"', '"2018-02-20"', '"2018-02-16"', '"2018-02-15"', '"2018-02-14"', '"2018-02-13"', '"2018-02-12"', '"2018-02-09"', '"2018-02-08"', '"2018-02-07"', '"2018-02-06"', '"2018-02-05"', '"2018-02-02"', '"2018-02-01"', '"2018-01-31"', '"2018-01-30"', '"2018-01-29"', '"2018-01-26"', '"2018-01-25"', '"2018-01-24"', '"2018-01-23"', '"2018-01-22"', '"2018-01-19"', '"2018-01-18"', '"2018-01-17"', '"2018-01-16"', '"2018-01-12"', '"2018-01-11"', '"2018-01-10"', '"2018-01-09"', '"2018-01-08"', '"2018-01-05"', '"2018-01-04"', '"2018-01-03"', '"2018-01-02"', '"2017-12-29"', '"2017-12-28"', '"2017-12-27"', '"2017-12-26"', '"2017-12-22"', '"2017-12-21"', '"2017-12-20"', '"2017-12-19"', '"2017-12-18"', '"2017-12-15"', '"2017-12-14"', '"2017-12-13"', '"2017-12-12"', '"2017-12-11"', '"2017-12-08"', '"2017-12-07"', '"2017-12-06"', '"2017-12-05"', '"2017-12-04"', '"2017-12-01"', '"2017-11-30"', '"2017-11-29"', '"2017-11-28"', '"2017-11-27"', '"2017-11-24"', '"2017-11-22"', '"2017-11-21"', '"2017-11-20"', '"2017-11-17"', '"2017-11-16"', '"2017-11-15"', '"2017-11-14"', '"2017-11-13"', '"2017-11-10"', '"2017-11-09"', '"2017-11-08"', '"2017-11-07"'],
+        datasets: [{
+            label: 'Volume Of Data',
+            data: {{volume}},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false
+                }
+            }]
+        },
+    }
+});
+</script>
+
+<script>
+var ctx = document.getElementById("myChart3").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{vol}},
+        datasets: [{
+            label: 'Price Of Data vs Volume Of Data (in past each minute)',
+            data: {{ap}},
+            backgroundColor: [
+                'rgba(153, 102, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgba(153,102,255,1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false
+                }
+            }]
+        },
+    }
+});
+</script>
+
+
+
+{% endblock %}

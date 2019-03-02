@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <title>StockTrainer</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="content container">
+        <div class="row">
+            <div class="col-md-8">
+              <h1>Register</h1>
+
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
+
+
+{% extends 'base.html' %}
+{% block content %}
+<body style="background-image: url('https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/VHNsr79/videoblocks-stack-of-indian-rupee_rzqe5ertc3g_thumbnail-full01.png')">
+<div style="margin-left: 550px; margin-right: 550px; margin-top: 100px; border: 1px solid black; padding: 40px; background-color: rgba(0,0,0,0.7); color: white">
+<form method='POST'>
+  {% csrf_token %}
+  <h2>Register Here</h2>
+  <br />
+  <div class="form-group">
+    <label name="username">Username</label>
+    <input type="text" class="form-control" name="username" id="exampleInputEmail1" placeholder="Enter username">
+  </div>
+
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Enter Password">
+  </div>
+
+<div class="form-group">
+  <label>EMAIL ID: </label>
+  <input type="text" name="email" class="form-control" id="exampleInputPassword1" placeholder="Enter Email">
+</div>
+
+<div class="form-group">
+  <label>First Name: </label>
+  <input type="text" name="fname" class="form-control" id="exampleInputPassword1" placeholder="First Name">
+</div>
+
+<div class="form-group">
+  <label>Last Name:</label>
+  <input type="text" name="lname" class="form-control" id="exampleInputPassword1" placeholder="Last Name">
+</div>
+<br />
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<br />
+<h3 style="text-align:right">Already a Member?</h3> <h4 style="text-align:right"><a href="{% url 'login' %}">Login</a></h4>
+</div>
+</body>
+{% endblock %}

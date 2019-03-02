@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<title>News</title>
+</head>
+<style>
+body {
+	background-color: #eee;
+}
+.container {
+	background-color:#fff;
+	margin-top: 0px;
+	padding: 10px;
+}
+img {
+	margin: 10px;
+	margin-right: 30px;
+}
+.media-body {
+	padding: 20px 20px 0 0;
+}
+</style>
+<body>
+{% include 'stock/header.html' %}
+<div style="padding-top: 80px;">
+	{% for article in articles  %}
+	
+		<div class="container">
+			
+				<div class="media">
+				<span class="media-left">
+					<img src="{{article.image_url}}" height="200px" width="300px">
+				</span>
+				<div class="media-body">
+					<a style="font-size: 20px; padding: 20px 0; font-weight: bold;" href="{{article.url}}">{{article.title}}</a>
+					<p>{{article.description}}</p>
+				</div>
+				</div>
+			
+		</div>	
+	<br />
+	{% endfor %}
+	</div>
+</body>
+</html>

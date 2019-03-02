@@ -1,0 +1,62 @@
+
+{% extends 'base.html' %}
+{% block content %}
+{% include 'stock/header.html' %}
+<div style="margin-left: 160px; margin-right: 160px">
+</br></br>
+<div class="card">
+  <h1 class="card-header">{{user.username}}</h1>
+  <div class="card-body">
+    <h5 class="card-title">Welcome Back, {{user.username}}. Your profile looks stunning!</h5>
+    <button type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Looks Stunning" data-content="Looks Stunning!">BALANCE: {{cb}}</button>
+    <a href="{% url 'index_page' %}" class="btn btn-primary" style="margin-left: 600px">Go Back To Homepage</a>
+  </div>
+</div>
+
+</br></br>
+<h1>Items in WatchList</h1>
+
+<table class="table table-bordered table-hover table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Stock-ID</th>
+      <th scope="col">Name Of Stock</th>
+      <th scope="col">Added On</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for stock in stocks %}
+    <tr>
+      <th scope="row">{{stock.id}}</th>
+      <td>{{stock}}</td>
+      <td>{{stock.added_on}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h1>Bought Items</h1>
+<table class="table table-bordered table-hover table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Stock-ID</th>
+      <th scope="col">Name Of Stock</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Buying Price</th>
+      <th scope="col">Added On</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for stock in bs %}
+    <tr>
+      <th scope="row">{{stock.id}}</th>
+      <td>{{stock}}</td>
+      <td>{{stock.quantity}}</td>
+      <td>{{stock.price}}</td>
+      <td>{{stock.added_on}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

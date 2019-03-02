@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'stock/header.html' %}
+{% block content1 %}
+{% endblock %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<div style="background-color:#eee; height: 800px">
+<div class="maincontent" style="margin-left: 160px; margin-right: 160px;">
+
+<button type="submit" class="btn btn-primary btn-lg" name="add" disabled style="position: absolute; left: 180px; top: 80px; width: 150px; height: 80px; font-size: 45px; background-color: #004084">{{crypto.symbol}}</button>
+        <button type="submit" class="btn btn-primary btn-lg" name="add" disabled style="position: absolute; right: 180px; top: 80px; width: 150px; height: 80px; font-size: 25px; background-color: #004084; overflow: hidden">{{current_price}}</button>
+        <div style="color: #004084; margin-top:15px; text-align: center; background-color: #fff; padding: 40px; margin-bottom: 5px">
+            <h1 style="margin-top: 30px;">{{crypto.name}}</h1><br />
+        </div>
+
+<!--
+<h1 style="padding:10px; margin-top:30px; background-color: #AEAAEC;border:1px black solid; margin-bottom: 27px; border-radius: 35px;font-size: 50px; text-align: center">{{crypto.name}}<br/>({{crypto.symbol}})</h1>
+<div style="width: 250px;border: 2px solid gray; margin-top:10px; margin-bottom: 26px; padding-left: 10px">
+    <h3>Current Price: </h3>
+    <h2>{{current_price}}</h2>
+</div>
+-->
+
+</br>
+<div class="accordion" id="accordion">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+          Graph Of Last 30 day Prices
+        </button>
+      </h5>
+    </div>
+    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+        <div style="width: 550px; height: 580px;">
+        <div class="chart-container" style="position: relative; height:60vh; width:75vw">
+            <canvas id="myChart"></canvas>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Graph Of Volume in Last-30 Days
+        </button>
+      </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
+      <div class="card-body">
+        <div style="width: 550px; height: 580px">
+        <div class="chart-container" style="position: absolute; height:60vh; width:75vw">
+            <canvas id="myChart2"></canvas>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<script>
+//var x = {{open}}
+var ctx = document.getElementById("myChart").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        //labels:{{month}}
+        labels: ['"2018-04-03"', '"2018-04-02"', '"2018-03-29"', '"2018-03-28"', '"2018-03-27"', '"2018-03-26"', '"2018-03-23"', '"2018-03-22"', '"2018-03-21"', '"2018-03-20"', '"2018-03-19"', '"2018-03-16"', '"2018-03-15"', '"2018-03-14"', '"2018-03-13"', '"2018-03-12"', '"2018-03-09"', '"2018-03-08"', '"2018-03-07"', '"2018-03-06"', '"2018-03-05"', '"2018-03-02"', '"2018-03-01"', '"2018-02-28"', '"2018-02-27"', '"2018-02-26"', '"2018-02-23"', '"2018-02-22"', '"2018-02-21"'],
+        datasets: [{
+            label: 'Opening Price',
+            data: {{open_data}},
+            backgroundColor: [
+                //'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 255, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+            ],
+            borderWidth: 1
+        },
+        {
+            label: 'Closing Price',
+            data: {{close_data}},
+            backgroundColor: [
+                //'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 255, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+            ],
+            borderWidth: 1
+        },
+        {
+            label: 'Highest Price',
+            data: {{high_data}},
+            backgroundColor: [
+                'rgba(255, 255, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 206, 86, 1)',
+            ],
+            borderWidth: 1
+        },
+        {
+            label: 'Lowest Price',
+            data: {{low_data}},
+            backgroundColor: [
+                //'rgba(75, 192, 192, 0.2)',
+                //'rgba(153, 102, 255, 0.2)',
+                //'rgba(255, 159, 64, 0.2)'
+                'rgba(255, 255, 255, 0.2)',
+            ],
+            borderColor: [
+                //'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false
+                }
+            }]
+        },
+    }
+});
+</script>
+
+<script>
+//var x = {{open}}
+var ctx = document.getElementById("myChart2").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        //labels:{{month}}
+        labels: ['"2018-04-03"', '"2018-04-02"', '"2018-03-29"', '"2018-03-28"', '"2018-03-27"', '"2018-03-26"', '"2018-03-23"', '"2018-03-22"', '"2018-03-21"', '"2018-03-20"', '"2018-03-19"', '"2018-03-16"', '"2018-03-15"', '"2018-03-14"', '"2018-03-13"', '"2018-03-12"', '"2018-03-09"', '"2018-03-08"', '"2018-03-07"', '"2018-03-06"', '"2018-03-05"', '"2018-03-02"', '"2018-03-01"', '"2018-02-28"', '"2018-02-27"', '"2018-02-26"', '"2018-02-23"', '"2018-02-22"', '"2018-02-21"'],
+        datasets: [{
+            label: 'Volume Of Data',
+            data: {{volume_data}},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false
+                }
+            }]
+        },
+    }
+});
+</script>
+
+
+
+{% endblock %}

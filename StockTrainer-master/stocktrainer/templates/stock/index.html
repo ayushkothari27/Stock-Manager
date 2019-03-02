@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <title>Welcome to StockTrain!</title>
+
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+  </style>
+
+
+</head>
+
+<body style="background-color: #eee;">
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  {% include 'stock/header.html' %}
+  {% block content %}
+  {% endblock %}
+  <div id="maincontent">
+    <div id="heading" class="jumbotron" style="background-color:#fff; margin-bottom: 2px; padding-bottom: 5px">
+      <table>
+        <tr>
+          <td><img src="http://pluspng.com/img-png/stock-market-png-stock-market-png-file-495.png" style="margin: 10px; width: 200px; height: 200px;" /></td>
+          <td style="padding: 20px">
+            <h2 class="display-4" style="color:#004084  "><b>Fortune 500</b> Companies</h2>
+            <p class="lead">This is a simple website where you can watchlist, buy and sell your favourite stocks and
+              get all
+              information about them and earn virtual money based on realtime prices.</p>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="search" style="width: 100%; height: 80px; background-color:#fff; box-shadow: 0px 5px 10px -4px #333; z-index: 50">
+      <form style="margin-left: 200px; padding: 20px" method='POST' style="float: left">
+        {% csrf_token %}
+        <span style="font-size: 20px; margin-right: 20px;">Enter Starting Letters or Name of Company</span>
+        <input type="text" name="filter" style="margin-top: 5px; width: 450px">&nbsp&nbsp
+        <button type="submit" class="btn btn-primary btn-sm" name="search" style="font-size: 20px">Search</button>&nbsp&nbsp
+        <button type="submit" class="btn btn-primary btn-sm" name="refresh" style="font-size: 20px">Refresh</button>
+      </form>
+    </div>
+    <br />
+    <table style="margin-left: 130px; margin-right: 130px">
+      {% for i in all_stocks %}
+      {% if forloop.counter0|divisibleby:2 %}<tr>{% endif %}
+        <td>
+          <div class="list-group" style="margin: 10px">
+            <a href="{% url 'detail' i.pk %}" class="list-group-item list-group-item-action flex-column align-items-start">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1" style="color: #004084"><b>{{i.name}}</b></h5>
+                <small><b>EPS: </b> {{i.last_annual_eps}}</small>
+              </div>
+              <p class="mb-1"><b style="color: #004084">Sector: </b> {{i.sector}}</p>
+              <small><b style="color: #004084">Industry: </b> {{i.industry}}</small>
+            </a>
+          </div>
+        </td>
+        {% if not forloop.counter0|divisibleby:2 %}</tr>{% endif %}
+      {% endfor %}
+    </table>
+  </div>
+  <script>
+    var fixed = false;
+    $(document).scroll(function () {
+      if ($(this).scrollTop() > $("#heading").height()) {
+        if (!fixed) {
+          fixed = true;
+          $('#search').css({ position: 'fixed', top: $("#myTopnav").height() });
+        }
+      } else {
+        if (fixed) {
+          fixed = false;
+          $('#search').css({ position: 'relative', top: 'auto' });
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
