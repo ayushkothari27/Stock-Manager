@@ -13,18 +13,30 @@ class Crypto(models.Model):
 class Stock(models.Model):
     name = models.CharField(max_length=100)
     symbol = models.CharField(max_length=10, blank=True,default="")
+<<<<<<< HEAD
     website = models.CharField(max_length=500, default="")
     sector = models.CharField(max_length=500, default="")
     industry = models.CharField(max_length=500, default="")
 
 
+=======
+    price = models.CharField(max_length=12, blank=True)
+    region = models.CharField(max_length=30, blank=True)
+    history = models.TextField(blank=True, default="NA")
+    prediction = models.TextField(blank=True, default="NA")
+    sentiment = models.CharField(max_length=50, blank=True, default="NA")
+
+    # website = models.CharField(max_length=500, default="")
+    # sector = models.CharField(max_length=500, default="")
+    # industry = models.CharField(max_length=500, default="")
+>>>>>>> fca8f2fd8707b6f63b9da87b119a48c2560ed269
     # last_annual_total_assets = models.BigIntegerField(default=0)
     # last_annual_revenue = models.BigIntegerField(default=0)
     # last_annual_net_income = models.BigIntegerField(default=0)
     # last_annual_eps = models.FloatField(default=0)
 
     def __str__(self):
-        return self.name
+        return str(self.name) + ' (' + str(self.symbol) + ')'
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')

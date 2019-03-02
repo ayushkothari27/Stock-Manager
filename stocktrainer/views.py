@@ -14,7 +14,9 @@ from sklearn.preprocessing import MinMaxScaler
 
 from keras.models import Sequential,load_model
 from keras.layers import Dense,LSTM,Dropout
-
+import requests
+from django.http import HttpResponseRedirect
+from django.views.generic.edit import DeleteView
 API_KEY = 'FQFTFEI83XPWMSPQ'
 
 def header_view(request):
@@ -44,17 +46,17 @@ def crypto(request):
 
 @login_required(login_url='/login/')
 def index_page(request):
-    #save_crypto_data()
-    #header_view(request)
+    fenil_key = "63XAFJTFC5HF4OE9"
     if(request.method=='GET' or (request.method=='POST' and 'refresh' in request.POST)):
-        all_stocks=Stock.objects.all()
+        res=Stock.objects.all()
     if request.method=='POST' and 'search' in request.POST:
-        filter=request.POST.get('filter','')
-        all_stocks=Stock.objects.filter(name__startswith=filter)
+        search = request.POST.get('filter','')
+        res = requests.get("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + search + "&apikey=" + fenil_key)
+        print(res)
     user = request.user
     list_of_stocks = user.entries.all()
 
-    return render(request, 'stock/index.html', {'all_stocks':all_stocks,'watch_stocks':list_of_stocks})
+    return render(request, 'stock/index.html', {'all_stocks':res,'watch_stocks':list_of_stocks})
 
 
 def forex_detail(request,forex_id):
@@ -210,6 +212,7 @@ def detail(request, stock_id):
     stock=get_object_or_404(Stock, id=stock_id)
     cp=requests.get('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+stock.symbol+'&interval=1min&apikey='+API_KEY)
     dict_cp=dict(cp.json())
+    print(dict_cp)
     dict_cp=dict_cp['Time Series (1min)']
     ap=[]
     vol=[]
@@ -475,10 +478,6 @@ class Article():
     def __str__(self):
         return self.url
 
-
-
-
-
 def forex(request):
 
 
@@ -496,3 +495,29 @@ def forex(request):
     #     forex.save()
     context = {'forex':queryset}
     return render(request,'stock/forex.html',context=context)
+class WatchlistDeleteView(DeleteView):
+    login_url = '/login/'
+    model = Watch
+    success_url = '/watchlist/'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        success_url = success_url + str(self.request.user.id)
+        print(self.object)
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
+@login_required
+def watchlist(request,id):
+    id = int(id)
+    if id == request.user.id:
+        user = User.objects.get(id=id)
+        watch_list = Watch.objects.filter(user=user)
+        print(watch_list)
+        return render(request, 'stock/watchlist.html',{'watch_list':watch_list,'id':id})
+    else:
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        redirect_url = '/watchlist/' + str(user.id)
+        return HttpResponseRedirect(redirect_url)
