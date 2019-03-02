@@ -1,5 +1,7 @@
-from django.conf.urls import url, include
+from django.conf.urls import url
 from . import views
+from django.views.generic import View
+from stocktrainer.views import *
 
 urlpatterns = [
     url(r'^index/', views.index_page, name='index_page'),
@@ -10,5 +12,7 @@ urlpatterns = [
     url(r'^profile/(?P<user_id>[0-9]+)$', views.profile, name='profile'),
     url(r'^news/$', views.news, name='news'),
     url(r'^crypto/$',views.crypto,name='crypto'),
-    url(r'^crypto/(?P<crypto_id>[0-9]+)/$',views.crypto_detail,name='crypto_detail')
+    url(r'^crypto/(?P<crypto_id>[0-9]+)/$',views.crypto_detail,name='crypto_detail'),
+    url(r'^watchlist/(\d+)/$', views.watchlist, name='watchlist'),
+    url(r'^watchlist-delete/(?P<pk>[0-9]+)/$', WatchlistDeleteView.as_view(), name='watchlist_delete'),
 ]

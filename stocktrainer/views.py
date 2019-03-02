@@ -8,7 +8,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as django_logout
 import requests
-
+from django.http import HttpResponseRedirect
+from django.views.generic.edit import DeleteView
 
 API_KEY = 'FQFTFEI83XPWMSPQ'
 
@@ -71,12 +72,12 @@ def crypto_detail(request, crypto_id):
     high_data = []
     volume_data = []
     month = []
-    
+
     try:
         daily_dicts = daily_data_30_days["Time Series (Digital Currency Daily)"]
         dates = list(daily_dicts.keys())
 
-    
+
         print(daily_dicts[dates[0]]["1a. open (USD)"])
         for i in range(30):
             month.append(dates[i])
@@ -93,7 +94,7 @@ def crypto_detail(request, crypto_id):
     '''
     for day in month:
 	    day = '"'+str(day)+'"'
-        
+
 	    new_month.append(day)
     print(new_month)
     '''
@@ -168,6 +169,7 @@ def detail(request, stock_id):
     stock=get_object_or_404(Stock, id=stock_id)
     cp=requests.get('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+stock.symbol+'&interval=1min&apikey='+API_KEY)
     dict_cp=dict(cp.json())
+    print(dict_cp)
     dict_cp=dict_cp['Time Series (1min)']
     ap=[]
     vol=[]
@@ -327,13 +329,13 @@ def news(request):
     articles_json = data['articles']
     bit_articles_json = bit_data['articles']
     articles_json += bit_articles_json
-    
+
     articles = []
-    
+
     for article in articles_json:
         articles.append(Article(title = article['title'], description = article['description'],url = article['url'],image_url=article['urlToImage']))
-        
-        
+
+
     context = {'articles':articles}
     #print(articles)
     #print(headlines)
@@ -347,6 +349,34 @@ class Article():
         self.url = url
         self.image_url = image_url
 
-    
+
     def __str__(self):
         return self.url
+
+
+class WatchlistDeleteView(DeleteView):
+    login_url = '/login/'
+    model = Watch
+    success_url = '/watchlist/'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        success_url = success_url + str(self.request.user.id)
+        print(self.object)
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
+@login_required
+def watchlist(request,id):
+    id = int(id)
+    if id == request.user.id:
+        user = User.objects.get(id=id)
+        watch_list = Watch.objects.filter(user=user)
+        print(watch_list)
+        return render(request, 'stock/watchlist.html',{'watch_list':watch_list,'id':id})
+    else:
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        redirect_url = '/watchlist/' + str(user.id)
+        return HttpResponseRedirect(redirect_url)
