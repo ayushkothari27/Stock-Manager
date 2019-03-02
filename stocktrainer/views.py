@@ -225,7 +225,7 @@ def detail(request, name, symbol, region):
     if request.method=='POST' and 'buy' in request.POST:
         print("aaaaya"*10)
         stock = Stock.objects.filter(symbol = symbol)
-        if stock == []:
+        if len(stock)==0:
             stock = Stock(name = name, symbol = symbol, region = region, price = current_price)
             stock.save()
         else:
