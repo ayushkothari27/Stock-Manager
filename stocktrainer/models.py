@@ -67,3 +67,12 @@ class Buy(models.Model):
 
     def __str__(self):
         return self.stock.name
+
+class Forex(models.Model):
+    name = models.CharField(max_length=100,default="")
+    symbol = models.CharField(max_length=100,default="")
+    exchange_rate = models.CharField(max_length=100,default="")
+
+
+    def __str__(self):
+        return self.name

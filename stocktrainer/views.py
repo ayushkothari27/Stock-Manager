@@ -7,13 +7,46 @@ from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as django_logout
+import matplotlib.pyplot as plt
+import tensorflow as tf
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+
+from keras.models import Sequential,load_model
+from keras.layers import Dense,LSTM,Dropout
 import requests
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import DeleteView
+
+from recombee_api_client.api_client import RecombeeClient
+from recombee_api_client.api_requests import AddItemProperty, SetItemValues, AddPurchase
+from recombee_api_client.api_requests import RecommendItemsToItem, Batch, ResetDatabase
+from recombee_api_client.api_requests import *
+import random
 from pprint import pprint
+from tweepy import Stream
+from tweepy import OAuthHandler
+from tweepy.streaming import StreamListener
+import time
+import json
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+nltk.download('vader_lexicon')
+sid = SentimentIntensityAnalyzer()
+
+# Create your views here.
+
+
+ckey="7h38tcEM8IO8id2htVXO9NDoW"
+csecret="A9zfCDyM8mx7P2LBaC9rkCIgoOV3P71ZCajKbn2l0tt4EnkObk"
+atoken="2611228746-JSr7EbtntCKlcAjZl5PkvVFxq8sYyzhamjvYYXg"
+asecret="45c3EKZBxdI86ssyoR3gypx0ffIZGFyjlgcsznft2SToD"
+
 
 API_KEY = 'FQFTFEI83XPWMSPQ'
 fenil_key = "63XAFJTFC5HF4OE9"
+
+client = RecombeeClient('stockmanager', 'Y9UsOCsqPBetEKgFtmatmcdBeifBwcFqgXTAYhVpu5hEPBh31DmQ18JC5w0hqqbb')
 
 def header_view(request):
     print("hey")
@@ -67,6 +100,43 @@ def index_page(request):
         print("hello")
         combined_list = zip(name, symbol, region, currency)
     return render(request, 'stock/index.html', {'all_stocks':all_stocks, 'combined_list': combined_list})
+
+
+def forex_detail(request,forex_id):
+    #     data = dict(response.json())['Realtime Currency Exchange Rate']
+    #     name = data['2. From_Currency Name']
+    #     symbol = data['1. From_Currency Code']
+    #     exchange_rate = data['5. Exchange Rate']
+    forex = get_object_or_404(Forex,id=forex_id)
+    response = requests.get('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency='+forex.symbol+'&to_currency=NZD&apikey=22318c0edb3f412fb605062a091e4239')
+    data = dict(response.json())['Realtime Currency Exchange Rate']
+    ex_rate = data['5. Exchange Rate']
+
+    daily_30_days_data = requests.get('https://www.alphavantage.co/query?function=FX_DAILY&from_symbol='+forex.symbol+'&to_symbol=USD&apikey='+API_KEY)
+    daily_30_days_data = dict(daily_30_days_data.json())
+    open_data = []
+    close_data = []
+    low_data = []
+    high_data = []
+    #print(daily_30_days_data)
+    try:
+        time_series_data = daily_30_days_data['Time Series FX (Daily)']
+        dates = list(time_series_data.keys())
+        #print(dates)
+        #print(time_series_data[dates[0]]['1. open'])
+        for i in range(30):
+
+            open_data.append(float(time_series_data[dates[i]]['1. open']))
+            close_data.append(float(time_series_data[dates[i]]['4. close']))
+            high_data.append(float(time_series_data[dates[i]]['2. high']))
+            low_data.append(float(time_series_data[dates[i]]['3. low']))
+    except Exception as e:
+        print('Error')
+
+    print(open_data)
+    context={'exchange':ex_rate,'open':open_data,'close':close_data,'high':high_data,'low':low_data}
+    return render(request,'stock/forex_detail.html',context=context)
+
 
 
 @login_required(login_url='/login/')
@@ -368,6 +438,103 @@ def news(request):
     #print(headlines)
     return render(request,'stock/news.html',context)
 
+def load_time_series(request,name,symbol):
+
+    stocks = Stock.objects.all()
+    symbols = [stock.symbol for stock in stocks]
+    if symbol not in symbols:
+        stocks = ['WMT','GOOG','T','MSFT','AAPL','BRK.B','FB','JPM','AMZN','BABA']
+        response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=WMT&outputsize=full&apikey=FQFTFEI83XPWMSPQ")
+        data = dict(response.json())
+        meta_data = data['Meta Data']
+        time_series = data['Time Series (Daily)']
+        symbol = meta_data['2. Symbol']
+        print(symbol)
+        c = 0
+        dates = []
+        open = []
+        for date,info in time_series.items():
+            dates.append(date)
+            open.append(info['1. open'])
+            c += 1
+            if c>1258:
+                break
+
+
+        #print(dates,open)
+
+
+
+        open_ = list(reversed(open_))
+        training_data = np.array(open_).reshape((-1,1))
+        print(training_data.shape)
+        #print(training_data)
+
+        scaler = MinMaxScaler()
+        training_data_scaled = scaler.fit_transform(training_data)
+        print(training_data_scaled.shape)
+        #print(training_data_scaled)
+
+
+        X_train = []
+        y_train = []
+        for i in range(60,1258):
+            X_train.append(training_data_scaled[i-60:i,0])
+            y_train.append(training_data_scaled[i,0])
+        X_train = np.array(X_train)
+        y_train = np.array(y_train)
+        print(X_train.shape,y_train.shape)
+        X_train = np.reshape(X_train,(X_train.shape[0],X_train.shape[1],1))
+
+
+        model = Sequential()
+        model.add(LSTM(units=50,return_sequences=True,input_shape=(X_train.shape[1],1)))
+        model.add(Dropout(0.2))
+        model.add(LSTM(units=50,return_sequences=True))
+        model.add(Dropout(0.2))
+        model.add(LSTM(units=50,return_sequences=True))
+        model.add(Dropout(0.2))
+        model.add(LSTM(units=50,return_sequences=False))
+        model.add(Dropout(0.2))
+        model.add(Dense(units=1))
+        model.compile(optimizer='adam',metrics=['accuracy'],loss='mean_squared_error')
+        model.fit(X_train,y_train,epochs=25,batch_size=32)
+
+
+        file_name = str(symbol)+'.h5'
+        model.save(file_name)
+        #model.summary()
+
+        inputs = open_[-80:]
+        inputs = np.array(inputs,dtype=np.float32).reshape((-1,1))
+        inputs = scaler.transform(inputs)
+
+
+        X_test = []
+        for i in range(60,80):
+            X_test.append(inputs[i-60:i,0])
+        X_test = np.array(X_test)
+        X_test = np.reshape(X_test,(X_test.shape[0],X_test.shape[1],1))
+
+        predictions = model.predict(X_test)
+        predictions = scaler.inverse_transform(predictions)
+        print(predictions)
+
+
+        historical_data = np.array(open_[-240:],dtype=np.float32)
+        price = open_[-1]
+        stock = Stock(name=name,symbol=symbol,prediction=predictions,history=historical_data,price=price)
+        stock.save()
+    else:
+        stock = Stock.objects.filter(symbol=symbol)
+
+    name = stock.name
+    symbol = stock.symbol
+    predictions = stock.prediction
+    historical_data = stock.history
+    price = stock.price
+
+    return render(request,'forex.html')
 
 class Article():
     def __init__(self,title,description,url,image_url):
@@ -380,7 +547,23 @@ class Article():
     def __str__(self):
         return self.url
 
+def forex(request):
 
+
+    queryset = Forex.objects.all()
+    #currencies = ['RUB','INR','BRL','ZAR']
+    # for curr in currencies:
+    #     response = requests.get('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={0}&to_currency=USD&apikey=22318c0edb3f412fb605062a091e4239'.format(curr))
+    #     #print(dict(response.json()))
+    #     data = dict(response.json())['Realtime Currency Exchange Rate']
+    #     name = data['2. From_Currency Name']
+    #     symbol = data['1. From_Currency Code']
+    #     exchange_rate = data['5. Exchange Rate']
+    #     #print(name,symbol,exchange_rate)
+    #     forex = Forex(name=name,symbol=symbol,exchange_rate=exchange_rate)
+    #     forex.save()
+    context = {'forex':queryset}
+    return render(request,'stock/forex.html',context=context)
 class WatchlistDeleteView(DeleteView):
     login_url = '/login/'
     model = Watch
@@ -400,3 +583,145 @@ def watchlist(request):
     watch_list = Watch.objects.filter(user=user)
     print(watch_list)
     return render(request, 'stock/watchlist.html',{'watch_list':watch_list})
+
+def recommend(request):    #database schema
+    client.send(AddItemProperty('range', 'double'))
+    client.send(AddItemProperty('region', 'string'))
+
+def initial_recombee(request): #populate recombee initially
+    stock = Stock.objects.all()
+    requests = []
+    for i in range(len(stock)):
+        name = stock[i].name
+        price = stock[i].price
+        region = stock[i].region
+        requests.append(SetItemValues(
+            name, #itemId
+            #values:
+            {
+              'range': price,
+              'region': region
+            },
+        cascade_create=True))   # Use cascadeCreate for creating item with given itemId if it doesn't exist
+
+    client.send(Batch(requests))
+
+def recombee_user(request):  #recombee user create
+    requests = []
+    requests.append(AddPurchase(2, "RMA", cascade_create=True))
+    requests.append(AddPurchase(2, "CHELASEA", cascade_create=True))
+
+    client.send(Batch(requests))
+
+def data_from_recombee(request):
+    xyz = client.send(RecommendItemsToUser(2, 2))
+    print(xyz)
+
+
+def bot(request,name):
+    print("Hi")
+    if request.method == 'POST':
+            global sign
+            reply = request.POST.get('reply', '')
+            print(reply)
+            global list_of_tweets
+            global i
+            global pos_count
+            flag = True
+            twitterStream = Stream(auth, listener())
+            twitterStream.filter(track=[reply])
+            print(list_of_tweets)
+            block = []
+            for j in range(len(list_of_tweets)):
+                url = "https://api.twitter.com/1.1/statuses/oembed.json"
+                params = dict(
+                id = list_of_tweets[j]
+                )
+                resp = requests.get(url=url, params=params)
+                data = resp.json()
+                try:
+                    aayu = data["html"].replace("<script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>","")
+                    block.append(aayu)
+                except Exception as e:
+                    pass
+            if pos_count>5:
+                sentiment = "The general sentiment of people is positive"
+            elif pos_count>3:
+                sentiment = "The general sentiment of people is nuetral"
+            else:
+                sentiment = "The general sentiment of people is negative"
+            list_of_tweets = []
+            i = 0
+            pos_count = 0
+            return render(request, 'stock/bot.html', {'reply':reply, 'flag':flag,'block':block, 'sentiment':sentiment})
+    else:
+            global sign
+            reply = name
+            print(reply)
+            flag = True
+            twitterStream = Stream(auth, listener())
+            twitterStream.filter(track=[reply])
+            print(list_of_tweets)
+            block = []
+            for j in range(len(list_of_tweets)):
+                url = "https://api.twitter.com/1.1/statuses/oembed.json"
+                params = dict(
+                id = list_of_tweets[j]
+                )
+                resp = requests.get(url=url, params=params)
+                data = resp.json()
+                try:
+                    aayu = data["html"].replace("<script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>","")
+                    block.append(aayu)
+                except Exception as e:
+                    pass
+            if pos_count>5:
+                sentiment = "The general sentiment of people is positive"
+            elif pos_count>3:
+                sentiment = "The general sentiment of people is nuetral"
+            else:
+                sentiment = "The general sentiment of people is negative"
+            list_of_tweets = []
+            i = 0
+            pos_count = 0
+            return render(request, 'stock/bot.html', {'reply':reply, 'flag':flag,'block':block, 'sentiment':sentiment})
+
+
+i = 0
+list_of_tweets = []
+pos_count = 0
+
+auth = OAuthHandler(ckey, csecret)
+auth.set_access_token(atoken, asecret)
+
+class listener(StreamListener):
+    def on_data(self, data):
+        global i
+        global list_of_tweets
+        global pos_count
+        data = json.loads(data)
+        try:
+            if data["id"] != ' ':
+                print(data["text"])
+                ss = sid.polarity_scores(data["text"])
+                if ss['compound']>=0:
+                    list_of_tweets.append(data["id"])
+                    pos_count = pos_count + 1
+                    i = i + 1
+                elif ss['compound']<=0:
+                    list_of_tweets.append(data["id"])
+                    i = i + 1
+                elif sign == "":
+                    list_of_tweets.append(data["id"])
+                    print("signlessssssss")
+                    i = i + 1
+        except Exception as e:
+            pass
+        if i<10:
+            return True
+        else:
+            return False
+
+    def on_error(self, status_code):
+        if status_code == 420:
+            return False
