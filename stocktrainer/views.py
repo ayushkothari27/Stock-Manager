@@ -8,8 +8,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as django_logout
 import requests
-from pprint import pprint
-
+from django.http import HttpResponseRedirect
+from django.views.generic.edit import DeleteView
+from print import print
 
 API_KEY = 'FQFTFEI83XPWMSPQ'
 
@@ -184,6 +185,7 @@ def detail(request, stock_id):
     stock=get_object_or_404(Stock, id=stock_id)
     cp=requests.get('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+stock.symbol+'&interval=1min&apikey='+API_KEY)
     dict_cp=dict(cp.json())
+    print(dict_cp)
     dict_cp=dict_cp['Time Series (1min)']
     ap=[]
     vol=[]
@@ -366,3 +368,31 @@ class Article():
 
     def __str__(self):
         return self.url
+
+
+class WatchlistDeleteView(DeleteView):
+    login_url = '/login/'
+    model = Watch
+    success_url = '/watchlist/'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        success_url = success_url + str(self.request.user.id)
+        print(self.object)
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
+@login_required
+def watchlist(request,id):
+    id = int(id)
+    if id == request.user.id:
+        user = User.objects.get(id=id)
+        watch_list = Watch.objects.filter(user=user)
+        print(watch_list)
+        return render(request, 'stock/watchlist.html',{'watch_list':watch_list,'id':id})
+    else:
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        redirect_url = '/watchlist/' + str(user.id)
+        return HttpResponseRedirect(redirect_url)
