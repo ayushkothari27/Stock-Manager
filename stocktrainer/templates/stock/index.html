@@ -132,11 +132,12 @@
   <br />
   <br />
   <br />
+
   <div class="container-fluid mt--7">
     <div class="row">
       <div class="col-xl-8 order-xl-2 mb-5 mb-xl-0">
         <div class="card card-profile shadow">
-          <h6 class="heading text-muted mb-4" style="margin-left: 20px; margin-top: 20px">Search</h6>
+          <h6 class="heading text-muted mb-4" style="margin-left: 20px; margin-top: 20px">Search Results</h6>
           <div class="row">
             {% for name, symbol, region, currency in combined_list %}
             <div class="col-xl-5" style="margin-bottom: 20px; margin-left: 40px">
@@ -181,47 +182,13 @@
         </div>
       </div>
     </div>
+    <script type="text/javascript">var _mcq = ["6", ""];</script>
+    <span id='_mc_mg6'></span>
+    <script language="JavaScript" src="https://stat1.moneycontrol.com/mcjs/common/https_mc_widget.js">
+    </script><noscript><a href="https://www.moneycontrol.com">Sensex/Nifty</a></noscript>
   </div>
-</div>
-<br />
-<div class="row" style="padding: 30px">
-  {% for name, symbol, region, currency in combined_list %}
-  <div class="col-lg-4 col-sm-12" style='margin-bottom: 30px'>
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">{{name}}</h5>
-        <p class="card-text">Symbol: {{symbol}} <br />
-          Region: {{region}}<br>
-          Currency: {{currency}}
-        </p>
-        <a href="#" class="btn btn-primary">View Details</a>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-</div>
-<table style="margin-left: 130px; margin-right: 130px">
-  {% for i in all_stocks %}
-  {% if forloop.counter0|divisibleby:2 %}<tr>{% endif %}
-    <td>
-      <div class="list-group" style="margin: 10px">
-        <a href="{% url 'detail' name symbol region %}" class="list-group-item list-group-item-action flex-column align-items-start">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1" style="color: #004084"><b>{{i.name}}</b></h5><br />
-            <br />
-            <small><b>Symbol: </b> {{i.symbol}}</small>
-          </div>
-          <p class="mb-1"><b style="color: #004084">Region: </b> {{i.region}}</p>
-        </a>
-      </div>
-    </td>
-    {% if not forloop.counter0|divisibleby:2 %}</tr>{% endif %}
-  {% endfor %}
-</table>
 </div>
 
-<script type="text/javascript">var _mcq=["6",""];</script>
-<span id='_mc_mg6'></span><script language="JavaScript" src="https://stat1.moneycontrol.com/mcjs/common/https_mc_widget.js">
-</script><noscript><a href="https://www.moneycontrol.com">Sensex/Nifty</a></noscript>
+
 
 {% endblock %}
