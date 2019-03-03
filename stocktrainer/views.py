@@ -575,7 +575,7 @@ def load_time_series(request,name,symbol):
     historical_data = stock.history
     price = stock.price
 
-    return render(request,'forex.html')
+    return render(request,'time_series.html')
 
 class Article():
     def __init__(self,title,description,url,image_url):
