@@ -45,8 +45,8 @@ atoken="2611228746-JSr7EbtntCKlcAjZl5PkvVFxq8sYyzhamjvYYXg"
 asecret="45c3EKZBxdI86ssyoR3gypx0ffIZGFyjlgcsznft2SToD"
 
 
-API_KEY = 'FQFTFEI83XPWMSPQ'
-fenil_key = "63XAFJTFC5HF4OE9"
+API_KEY = '63XAFJTFC5HF4OE9'
+fenil_key = "FQFTFEI83XPWMSPQ"
 
 client = RecombeeClient('stockmanager', 'Y9UsOCsqPBetEKgFtmatmcdBeifBwcFqgXTAYhVpu5hEPBh31DmQ18JC5w0hqqbb')
 
@@ -72,6 +72,12 @@ def stockform(request):
         trans.save()
         profile.save()
         return render(request, 'stock/stockform.html')
+
+@login_required(login_url='/login/')
+def stocktrain(request):
+    user = request.user
+    bought_stocks = user.bentries_for_train.all()
+    return render(request, 'stock/stocktrain.html', context={'bs': bought_stocks})
 
 def header_view(request):
     print("hey")
@@ -349,16 +355,32 @@ def detail(request, name, symbol, region):
             stock = stock[0]
         if request.user.is_authenticated:
             quantity = int(request.POST.get('quantity', ''))
-            profile = Profile.objects.get(user=request.user)
-            x = float(current_price)*quantity
-            if(profile.balance < x):
-                message="Insufficient Balance"
+            if(request.POST.get('price', '')):
+                buy = int(request.POST.get('price', ''))
+                profile = Profile.objects.get(user=request.user)
+                x = float(buy)*quantity
+                if(profile.balance < x):
+                    message="Insufficient Balance"
+                else:
+                    bought = Buy(user=request.user, stock=stock, quantity=quantity, price=float(buy))
+                    bought.save()
+                    profile.balance = profile.balance-x
+                    profile.save()
+                    transaction = Transaction(user=request.user, name=name, type="Stock", quantity=quantity, 
+                    method='Buy', price=float(buy))
+                    transaction.save()
+                    message="The Stock is Bought at price "+str(buy)+" with current balance = "+str(profile.balance)+"\nDeducted INR= "+str(x)
             else:
-                bought = Buy(user=request.user, stock=stock, quantity=quantity, price=float(current_price))
-                bought.save()
-                profile.balance = profile.balance-x
-                profile.save()
-                message="The Stock is Bought at price "+current_price+" with current balance = "+str(profile.balance)+"\nDeducted INR= "+str(x)
+                profile = Profile.objects.get(user=request.user)
+                x = float(current_price)*quantity
+                if(profile.balance < x):
+                    message="Insufficient Balance"
+                else:
+                    bought = Buy(user=request.user, stock=stock, quantity=quantity, price=float(current_price))
+                    bought.save()
+                    profile.balance = profile.balance-x
+                    profile.save()
+                    message="The Stock is Bought at price "+current_price+" with current balance = "+str(profile.balance)+"\nDeducted INR= "+str(x)
         else:
             message="Please Login to Continue"
             return redirect('/login')
@@ -373,8 +395,15 @@ def detail(request, name, symbol, region):
                 tq = tq + i.quantity
             if(tq>=quantity):
                 profile = Profile.objects.get(user=request.user)
-                profile.balance = profile.balance + quantity*float(current_price)
+                if request.POST.get('sell_price', ''):
+                    selling_price = float(request.POST.get('sell_price', ''))
+                else:
+                    selling_price = float(current_price)
+                profile.balance = profile.balance + quantity*float(selling_price)
                 profile.save()
+                transaction = Transaction(user=request.user, name=name, type="Stock", quantity=quantity, 
+                method='Sell', price=float(selling_price))
+                transaction.save()
                 for i in ast:
                     if(quantity-i.quantity>=0):
                         quantity = quantity - i.quantity
@@ -390,6 +419,69 @@ def detail(request, name, symbol, region):
         else:
             message="Please Login to Continue"
             return redirect('/login')
+
+
+
+
+
+
+    if request.method=='POST' and 'buytemp' in request.POST:
+        print("aaaaya"*10)
+        stock = Stock.objects.filter(symbol = symbol)
+        if len(stock)==0:
+            stock = Stock(name = name, symbol = symbol, region = region, price = current_price)
+            stock.save()
+        else:
+            stock = stock[0]
+        if request.user.is_authenticated:
+            quantity = int(request.POST.get('bquantity', ''))
+            profile = Profile.objects.get(user=request.user)
+            x = float(current_price)*quantity
+            if(profile.starting_money < x):
+                message="Insufficient Balance"
+            else:
+                bought = Buyfortrain(user=request.user, stock=stock, quantity=quantity, price=float(current_price))
+                bought.save()
+                profile.starting_money = profile.starting_money-x
+                profile.save()
+                message="The Stock is virtually Bought at price "+current_price+" with current balance = "+str(profile.starting_money)+"\nDeducted INR= "+str(x)
+        else:
+            message="Please Login to Continue"
+            return redirect('/login')
+    if request.method=='POST' and 'selltemp' in request.POST:
+        if request.user.is_authenticated:
+            quantity = int(request.POST.get('squantity', ''))
+            q = quantity
+            stock = Stock.objects.filter(symbol=symbol)
+            if len(stock)==0:
+                message = "Buy stocks first"
+            else:
+                stock = stock[0]
+                ast = Buyfortrain.objects.filter(user=request.user, stock=stock)
+                tq = 0
+                for i in ast:
+                    tq = tq + i.quantity
+                if(tq>=quantity):
+                    profile = Profile.objects.get(user=request.user)
+                    selling_price = float(current_price)
+                    profile.starting_money = profile.starting_money + quantity*float(selling_price)
+                    profile.save()
+                    for i in ast:
+                        if(quantity-i.quantity>=0):
+                            quantity = quantity - i.quantity
+                            i.delete()
+                        else:
+                            i.quantity = i.quantity - quantity
+                            i.save()
+                            quantity = 0
+                            break
+                    message="Succesfully sold your "+ str(q)+" stocks. Total Balance = "+str(profile.starting_money)+". Total Stocks Of Item Left: "+str(tq-q)
+                else:
+                    message="Not enough Stock of this company. Owned Stocks = "+str(tq)
+        else:
+            message="Please Login to Continue"
+            return redirect('/login')
+
 
     context={
         'last_day_low': low[0],
@@ -460,10 +552,26 @@ def logout(request):
 def profile(request, user_id):
    user = get_object_or_404(User, pk=user_id)
    bought_stocks = user.bentries.all()
+   prices = []
+
+   for s in bought_stocks:
+       print(s.stock.symbol)
+    #    res = requests.get("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + s.stock.sy + "&apikey=" + fenil_key)
+    #    query_results = dict(res.json())
+    #    symb = query_results['bestMatches'][0]['1. symbol']
+       cp=requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol='+s.stock.symbol+'&apikey='+fenil_key)
+       dict_cp=dict(cp.json())
+       print(dict_cp)
+       price=dict_cp['Global Quote']["05. price"]
+       price = (float(price) - float(s.price))*float(s.quantity)
+       prices.append("{0:.2f}".format(price))
+
+
    profile = Profile.objects.get(user=user)
    history  = user.transac.all()
+   send_together = zip(bought_stocks, prices)
    return render(request, 'stock/profile.html',
-   {'user': user, 'history': history, 'profile': profile, 'bs': bought_stocks})
+   {'user': user, 'history': history, 'profile': profile, 'bs': send_together})
 
 
 def news(request):
@@ -486,7 +594,7 @@ def news(request):
     #print(headlines)
     return render(request,'stock/news.html',context)
 
-def load_time_series(request,name,symbol,region):
+def load_time_series(request,name,symbol, region):
 
     stocks = Stock.objects.all()
     symbols = [stock.symbol for stock in stocks]

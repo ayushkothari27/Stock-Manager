@@ -185,21 +185,23 @@
                   <table class="table table-bordered table-hover table-sm">
                     <thead>
                       <tr>
-                        <th scope="col">Stock-ID</th>
+                        <th scope="col">ID</th>
                         <th scope="col">Name Of Stock</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Buying Price</th>
+                        <th scope="col">Qt.</th>
+                        <th scope="col">Buy Price</th>
                         <th scope="col">Added On</th>
+                        <th scope="col">Profit/Loss</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% for stock in bs %}
+                      {% for stock, price in bs %}
                       <tr>
                         <th scope="row">{{stock.id}}</th>
                         <td>{{stock}}</td>
                         <td>{{stock.quantity}}</td>
                         <td>{{stock.price}}</td>
                         <td>{{stock.added_on}}</td>
+                        <td>{{price}}</td>
                       </tr>
                       {% endfor %}
                     </tbody>
