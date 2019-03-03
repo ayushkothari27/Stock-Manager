@@ -39,7 +39,7 @@ class Transaction(models.Model):
     quantity = models.IntegerField(default=10)
     method_type = (("Buy", "Buy"),("Sell", "Sell"))
     method = models.CharField(max_length=10, choices=method_type)
-    price = models.FloatField()
+    price = models.FloatField(default=0.0)
 
     def __str__(self):
         return self.user.first_name + self.name

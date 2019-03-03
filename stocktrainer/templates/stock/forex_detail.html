@@ -1,12 +1,397 @@
-<<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    {% for open in open %}
-    <p>{{open}}</p>
-    {% endfor %}
-  </body>
-</html>
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+
+<!-- Header -->
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+    style="min-height: 600px; background-image: url({% static '/assets/img/theme/profile-cover.jpg' %}); background-size: cover; background-position: center top;">
+    <!-- Mask -->
+    <span class="mask bg-gradient-default opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="col-lg-12 col-md-10">
+                <h1 class="display-2 text-white">{{name}}</h1>
+                <h3 class="display-4 text-white">{{symbol}}</h3>
+                <p class="text-white mt-0 mb-5"><br> {{symbol}}<br>{{region}}</p>
+                <a href="#!" class="btn btn-info">{{current_price}}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+    <div class="row">
+        <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+            <div class="card card-profile shadow">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 order-lg-2">
+                        <div class="card-profile-image">
+                            <a href="#">
+                                <img src="{% static "/assets/img/theme/team-4-800x800.jpg" %}" class="rounded-circle">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                    <div class="d-flex justify-content-between">
+                        <a href="#" class="btn btn-sm btn-info mr-4" name="buy" data-toggle="modal"
+                            data-target="#buyModal">Buy</a>
+                        <a href="#" class="btn btn-sm btn-default float-right" name="sell" data-toggle="modal"
+                            data-target="#sellModal">Sell</a>
+                    </div>
+                </div>
+                <div class="card-body pt-0 pt-md-4">
+                    <!-- <div class="row">
+                <div class="col">
+                  <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                    <div>
+                      <span class="heading">22</span>
+                      <span class="description">Friends</span>
+                    </div>
+                    <div>
+                      <span class="heading">10</span>
+                      <span class="description">Photos</span>
+                    </div>
+                    <div>
+                      <span class="heading">89</span>
+                      <span class="description">Comments</span>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+                    <br><br>
+                    <div class="text-center">
+                        <h3>
+                            Mock Stock Trainer
+                        </h3>
+                        <!-- <div class="h5 font-weight-300">
+                  <i class="ni location_pin mr-2"></i>Bucharest, Romania
+                </div> -->
+                        <div class="h5 mt-4">
+                            <i class="ni business_briefcase-24 mr-2"></i>{{stock.name}}, <span
+                                class="font-weight-light">{{stock.symbol}}</span>
+                        </div>
+                        <!-- <div>
+                  <i class="ni education_hat mr-2"></i>University of Computer Science
+                </div> -->
+                        <hr class="my-4" />
+                        <p>Buy and sell virtual stocks in real time and train yourself to become a master at stock
+                            trading.</p>
+                        <a href="#">Manage other virtual stocks</a>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <a class="nav-link active" href="{% url 'load_time_series' name symbol region %}" style="z-index: 20">
+                <div class="card card-profile shadow">
+                    <button id="time-series" class="form-control form-control-alternative">Time Series Analysis</button>
+                </div>
+            </a>
+            <br />
+            <a class="nav-link active" href="#" style="z-index: 20">
+                <div class="card card-profile shadow">
+                    <button id="sentiment-analysis" class="form-control form-control-alternative">Sentiment
+                        Analysis</button>
+                </div>
+            </a>
+            <br />
+            <a class="nav-link active" href="{% url 'google_trends' name %}" style="z-index: 20">
+                <div class="card card-profile shadow">
+                    <button id="google-trends" class="form-control form-control-alternative">Google Trends</button>
+                </div>
+            </a>
+            <br />
+            <a class="nav-link active" href="#" style="z-index: 20">
+                <div class="card card-profile shadow">
+                    <button id="sma-ema" class="form-control form-control-alternative">SMA & EMA Analysis</button>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-8 order-xl-1">
+            <div class="card bg-secondary shadow">
+                <!-- <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">My account</h3>
+                </div>
+                <div class="col-4 text-right">
+                  <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                </div>
+              </div>
+            </div> -->
+                <div class="card-body">
+                    <form>
+                        <h6 class="heading-small text-muted mb-4">Stock information</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-username">Last Day Low</label>
+                                        <input type="text" id="input-username"
+                                            class="form-control form-control-alternative" placeholder="{{last_day_low}}"
+                                            value="{{last_day_low}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-email">Last Day High</label>
+                                        <input type="email" id="input-email"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{last_day_high}}" value="{{last_day_high}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-first-name">Last Day Open</label>
+                                        <input type="text" id="input-first-name"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{last_day_open}}" value="{{last_day_open}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-last-name">Last Day Close</label>
+                                        <input type="text" id="input-last-name"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{last_day_close}}" value="{{last_day_close}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4" />
+                        <!-- Graph 1 -->
+                        <h6 class="heading-small text-muted mb-4">Graph Of Last 30 day Prices</h6>
+                        <div class="pl-lg-4">
+                            <canvas id="myChart" style="height:500px;"></canvas>
+                            <!-- <div class="row">
+                <div class="card-body">
+                    <form>
+                        <h6 class="heading-small text-muted mb-4">Stock information</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-username">Last Annual Total
+                                            Assets</label>
+                                        <input type="text" id="input-username"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{stock.last_annual_total_assets}}"
+                                            value="{{stock.last_annual_total_assets}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-email">Last Annual Net
+                                            Income</label>
+                                        <input type="email" id="input-email"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{stock.last_annual_net_income}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-first-name">Last Annual
+                                            Revenue</label>
+                                        <input type="text" id="input-first-name"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{stock.last_annual_revenue}}"
+                                            value="{{stock.last_annual_revenue}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-last-name">Last Annual EPS</label>
+                                        <input type="text" id="input-last-name"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{stock.last_annual_eps}}" value="{{stock.last_annual_eps}}"
+                                            disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4" />
+                        <!-- Graph 1 -->
+
+
+                                <!-- <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-address">Address</label>
+                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-city">City</label>
+                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="City" value="New York">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-country">Country</label>
+                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Country" value="United States">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-country">Postal code</label>
+                        <input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Postal code">
+                      </div>
+                    </div>
+                  </div>-->
+
+
+                            <!-- <hr class="my-4" />
+                <h6 class="heading-small text-muted mb-4">About me</h6>
+                <div class="pl-lg-4">
+                  <div class="form-group">
+                    <label>About Me</label>
+                    <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
+                  </div>
+                </div> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Modals-->
+    <div class="modal fade" id="buyModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Buy Stocks</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <form method='POST' action="{% url 'detail' name symbol region %}">
+                    {% csrf_token %}
+                    <div style="width: 600px; margin-left: 50px; background-color: #DDD">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="quantity"
+                                placeholder="Enter total Number Of Stocks to Buy:" aria-label="Recipient's username"
+                                aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit" name="buy">Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="sellModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Sell Stocks</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form method='POST' action="{% url 'detail' name symbol region %}">
+                    {% csrf_token %}
+                    <div style="width: 600px; margin-left: 50px; background-color: #DDD">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="squantity"
+                                placeholder="Enter total Number Of Stocks to Sell:" aria-label="Recipient's username"
+                                aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit" name="sell">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- Argon Scripts -->
+<!-- Core -->
+<script src="{% static "/assets/vendor/jquery/dist/jquery.min.js" %}"></script>
+<script src="{% static "/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
+<script src="{% static "/assets/js/argon.js" %}"></script>
+
+<script>
+    var x = {{ open|safe }}
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels:['"2019-03-03"', '"2019-03-02"', '"2019-03-01"', '"2019-02-28"', '"2019-02-27"', '"2019-02-26"', '"2019-02-25"', '"2019-02-24"', '"2019-02-23"', '"2019-02-22"', '"2019-02-21"', '"2019-02-20"', '"2019-02-19"', '"2019-02-18"', '"2019-02-17"', '"2019-02-16"', '"2019-02-15"', '"2019-02-14"', '"2019-02-13"', '"2019-02-12"', '"2019-02-11"', '"2019-02-10"', '"2019-02-09"', '"2019-02-08"', '"2019-02-07"', '"2019-02-06"', '"2019-02-05"', '"2019-02-04"', '"2019-02-03"'],
+            datasets: [{
+                label: 'Opening Price',
+                data: {{ open|safe }},
+        backgroundColor: [
+            //'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 255, 255, 0.2)',
+        ],
+        borderColor: [
+            'rgba(255,99,132,1)',
+        ],
+        borderWidth: 1
+    },
+        {
+            label: 'Closing Price',
+            data: {{ close|safe }},
+    backgroundColor: [
+        //'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 255, 255, 0.2)',
+    ],
+        borderColor: [
+            'rgba(54, 162, 235, 1)',
+        ],
+            borderWidth: 1
+            },
+    {
+        label: 'Highest Price',
+            data: {{ high|safe }},
+        backgroundColor: [
+            'rgba(255, 255, 255, 0.2)',
+        ],
+            borderColor: [
+                'rgba(255, 206, 86, 1)',
+            ],
+                borderWidth: 1
+    },
+    {
+        label: 'Lowest Price',
+            data: {{ low|safe }},
+        backgroundColor: [
+            //'rgba(75, 192, 192, 0.2)',
+            //'rgba(153, 102, 255, 0.2)',
+            //'rgba(255, 159, 64, 0.2)'
+            'rgba(255, 255, 255, 0.2)',
+        ],
+            borderColor: [
+                //'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+                borderWidth: 1
+    }]
+        },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false
+                }
+            }]
+        },
+    }
+    });
+</script>
+
+
+{% endblock %}
