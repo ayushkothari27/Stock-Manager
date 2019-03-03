@@ -14,7 +14,7 @@
                 <h1 class="display-2 text-white">{{name}}</h1>
                 <h3 class="display-4 text-white">{{symbol}}</h3>
                 <p class="text-white mt-0 mb-5"><br> {{symbol}}<br>{{region}}</p>
-                <a href="#!" class="btn btn-info">{{current_price}}</a>
+                <a href="#!" class="btn btn-info">{{exchange_rate}}</a>
             </div>
         </div>
     </div>
@@ -83,30 +83,7 @@
                 </div>
             </div>
             <br />
-            <a class="nav-link active" href="{% url 'load_time_series' name symbol region %}" style="z-index: 20">
-                <div class="card card-profile shadow">
-                    <button id="time-series" class="form-control form-control-alternative">Time Series Analysis</button>
-                </div>
-            </a>
-            <br />
-            <a class="nav-link active" href="#" style="z-index: 20">
-                <div class="card card-profile shadow">
-                    <button id="sentiment-analysis" class="form-control form-control-alternative">Sentiment
-                        Analysis</button>
-                </div>
-            </a>
-            <br />
-            <a class="nav-link active" href="{% url 'google_trends' name %}" style="z-index: 20">
-                <div class="card card-profile shadow">
-                    <button id="google-trends" class="form-control form-control-alternative">Google Trends</button>
-                </div>
-            </a>
-            <br />
-            <a class="nav-link active" href="#" style="z-index: 20">
-                <div class="card card-profile shadow">
-                    <button id="sma-ema" class="form-control form-control-alternative">SMA & EMA Analysis</button>
-                </div>
-            </a>
+
         </div>
         <div class="col-xl-8 order-xl-1">
             <div class="card bg-secondary shadow">

@@ -366,7 +366,7 @@ def detail(request, name, symbol, region):
                     bought.save()
                     profile.balance = profile.balance-x
                     profile.save()
-                    transaction = Transaction(user=request.user, name=name, type="Stock", quantity=quantity, 
+                    transaction = Transaction(user=request.user, name=name, type="Stock", quantity=quantity,
                     method='Buy', price=float(buy))
                     transaction.save()
                     message="The Stock is Bought at price "+str(buy)+" with current balance = "+str(profile.balance)+"\nDeducted INR= "+str(x)
@@ -401,7 +401,7 @@ def detail(request, name, symbol, region):
                     selling_price = float(current_price)
                 profile.balance = profile.balance + quantity*float(selling_price)
                 profile.save()
-                transaction = Transaction(user=request.user, name=name, type="Stock", quantity=quantity, 
+                transaction = Transaction(user=request.user, name=name, type="Stock", quantity=quantity,
                 method='Sell', price=float(selling_price))
                 transaction.save()
                 for i in ast:
@@ -730,17 +730,17 @@ def forex(request):
 
     curr_set = ['EUR','JPY','GBP','AUD','CAD','CHF','CNY','SEK','NZD','MXN','SGD','HKD','NOK','KRW','TRY','RUB','INR','BRL','ZAR']
     queryset = Forex.objects.all()
-    currencies = ['SGD']
-    for curr in currencies:
-        response = requests.get('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={0}&to_currency=USD&apikey=22318c0edb3f412fb605062a091e4239'.format(curr))
-        #print(dict(response.json()))
-        data = dict(response.json())['Realtime Currency Exchange Rate']
-        name = data['2. From_Currency Name']
-        symbol = data['1. From_Currency Code']
-        exchange_rate = data['5. Exchange Rate']
-        #print(name,symbol,exchange_rate)
-        forex = Forex(name=name,symbol=symbol,exchange_rate=exchange_rate)
-        forex.save()
+    # currencies = ['SGD']
+    # for curr in currencies:
+    #     response = requests.get('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={0}&to_currency=USD&apikey=22318c0edb3f412fb605062a091e4239'.format(curr))
+    #     #print(dict(response.json()))
+    #     data = dict(response.json())['Realtime Currency Exchange Rate']
+    #     name = data['2. From_Currency Name']
+    #     symbol = data['1. From_Currency Code']
+    #     exchange_rate = data['5. Exchange Rate']
+    #     #print(name,symbol,exchange_rate)
+    #     forex = Forex(name=name,symbol=symbol,exchange_rate=exchange_rate)
+    #     forex.save()
     context = {'forex':queryset}
     return render(request,'stock/forex.html',context=context)
 
