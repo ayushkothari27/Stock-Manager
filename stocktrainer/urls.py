@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^forex_detail/(?P<forex_id>[0-9]+)/$',views.forex_detail,name='forex_detail'),
     url(r'^watchlist/$', views.watchlist, name='watchlist'),
     url(r'^recommend/$', views.recommend, name='recommend'),
+    url(r'^delrecom/$', views.delrecom, name='delrecom'),
     url(r'^initial_recombee/$', views.initial_recombee, name='initial_recombee'),
     url(r'^recombee_user/$', views.recombee_user, name='recombee_user'),
     url(r'^data_from_recombee/$', views.data_from_recombee, name='data_from_recombee'),

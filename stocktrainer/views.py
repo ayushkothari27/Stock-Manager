@@ -100,10 +100,10 @@ def crypto(request):
 @login_required(login_url='/login/')
 def index_page(request):
     # Recombee results
-    xyz = client.send(RecommendItemsToUser(request.user.id, 5))
+    xyz = client.send(RecommendItemsToUser(request.user.id, 5, cascade_create=True))
     print(xyz)
     all_stocks = []
-    for i, value in enumerate(d['id'] for d in xyz):
+    for i, value in enumerate(d['id'] for d in xyz['recomms']):
         stock = Stock.objects.get(name=value)
         all_stocks.append(stock)
     # Kushal's code
@@ -661,10 +661,17 @@ def recommend(request):    #database schema
     client.send(AddItemProperty('range', 'double'))
     client.send(AddItemProperty('region', 'string'))
 
+def delrecom(request):    #database schema
+    client.send(DeleteItem('Arsenal'))
+    client.send(DeleteItem('BARCA'))
+    client.send(DeleteItem('RMA'))
+    client.send(DeleteItem('CHELASEA'))
+    client.send(DeleteItem('CHELSEA'))
+
 def initial_recombee(request): #populate recombee initially
     stock = Stock.objects.all()
     requests = []
-    for i in range(len(stock)):
+    for i in range(3, len(stock)):
         name = stock[i].name
         price = stock[i].price
         region = stock[i].region
@@ -681,7 +688,7 @@ def initial_recombee(request): #populate recombee initially
 
 def recombee_user(request):  #recombee user create
     requests = []
-    requests.append(AddPurchase(2, "RMA", cascade_create=True))
+    requests.append(AddPurchase(2, "AA", cascade_create=True))
     requests.append(AddPurchase(2, "CHELASEA", cascade_create=True))
 
     client.send(Batch(requests))

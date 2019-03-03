@@ -163,7 +163,7 @@
             <tr>
               <td>
                 <div class="list-group" style="margin: 10px">
-                  <a href="{% url 'detail' name symbol region %}"
+                  <a href="{% url 'detail' i.name i.symbol i.region %}"
                     class="list-group-item list-group-item-action flex-column align-items-start">
                     <div class="d-flex w-100 justify-content-between">
                       <h5 class="mb-1" style="color: #004084"><b>{{i.name}}</b></h5><br />
@@ -219,20 +219,9 @@
   {% endfor %}
 </table>
 </div>
-<script>
-  // var fixed = false;
-  // $(document).scroll(function () {
-  //   if ($(this).scrollTop() > 378) {
-  //     if (!fixed) {
-  //       fixed = true;
-  //       $('#search').css({ position: 'fixed', top: 0, width: '90%' });
-  //     }
-  //   } else {
-  //     if (fixed) {
-  //       fixed = false;
-  //       $('#search').css({ position: 'relative', top: 'auto', width: '100%' });
-  //     }
-  //   }
-  // });
-</script>
+
+<script type="text/javascript">var _mcq=["6",""];</script>
+<span id='_mc_mg6'></span><script language="JavaScript" src="https://stat1.moneycontrol.com/mcjs/common/https_mc_widget.js">
+</script><noscript><a href="https://www.moneycontrol.com">Sensex/Nifty</a></noscript>
+
 {% endblock %}
