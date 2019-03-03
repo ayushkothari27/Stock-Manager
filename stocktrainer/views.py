@@ -113,7 +113,7 @@ def index_page(request):
         stock = Stock.objects.get(name=value)
         all_stocks.append(stock)
     # Kushal's code
-
+    database_stocks = Stock.objects.all()
     # Will be replaced by above
 
 
@@ -134,7 +134,7 @@ def index_page(request):
             currency.append(i['8. currency'])
         print("hello")
         combined_list = zip(name, symbol, region, currency)
-    return render(request, 'stock/index.html', {'all_stocks':all_stocks, 'combined_list': combined_list})
+    return render(request, 'stock/index.html', {'all_stocks':all_stocks, 'combined_list': combined_list,'database':database_stocks})
 
 
 def forex_detail(request,forex_id):
@@ -168,8 +168,12 @@ def forex_detail(request,forex_id):
     except Exception as e:
         print('Error')
 
+    last_day_low = time_series_data[dates[0]]['3. low']
+    last_day_high = time_series_data[dates[0]]['2. high']
+    last_day_open = time_series_data[dates[0]]['1. open']
+    last_day_close = time_series_data[dates[0]]['4. close']
     print(open_data)
-    context={'exchange':ex_rate,'open':open_data,'close':close_data,'high':high_data,'low':low_data,'name':forex.name,'symbol':forex.symbol}
+    context={'exchange':ex_rate,'open':open_data,'close':close_data,'high':high_data,'low':low_data,'name':forex.name,'symbol':forex.symbol,'last_day_low':last_day_low,'last_day_high':last_day_high,'last_day_open':last_day_open,'last_day_close':last_day_close}
     return render(request,'stock/forex_detail.html',context=context)
 
 
@@ -356,7 +360,7 @@ def detail(request, name, symbol, region):
         if request.user.is_authenticated:
             quantity = int(request.POST.get('quantity', ''))
             if(request.POST.get('price', '')):
-                buy = int(request.POST.get('price', ''))
+                buy = float(request.POST.get('price', ''))
                 profile = Profile.objects.get(user=request.user)
                 x = float(buy)*quantity
                 if(profile.balance < x):

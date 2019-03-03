@@ -15,6 +15,10 @@
                 <h3 class="display-4 text-white">{{symbol}}</h3>
                 <p class="text-white mt-0 mb-5"><br> {{symbol}}<br>{{region}}</p>
                 <a href="#!" class="btn btn-info">{{current_price}}</a>
+                <form method="post">
+                  {% csrf_token %}
+                  <br><input type="submit" name="add" class="btn btn-warning" value="Add To Watchlist"><br>
+               </form>
             </div>
         </div>
     </div>
@@ -198,7 +202,7 @@
                         </div>
                         <hr class="my-4" />
                         <!-- Graph 1 -->
-                    
+
 
                             <!-- <div class="row">
                 <div class="card-body">

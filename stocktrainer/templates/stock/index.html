@@ -153,6 +153,20 @@
               </div>
             </div>
             {% endfor %}
+            {% for stock in database %}
+            <div class="col-xl-5" style="margin-bottom: 20px; margin-left: 40px">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">{{stock.name}}</h5>
+                  <p class="card-text">Symbol: {{stock.symbol}} <br />
+                    Region: {{stock.region}}
+                    Currency: $
+                  </p>
+                  <a href="{% url 'detail' name symbol region %}" class="btn btn-primary">View Details</a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
