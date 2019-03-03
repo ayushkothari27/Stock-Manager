@@ -89,7 +89,7 @@
                 </div>
             </a>
             <br />
-            <a class="nav-link active" href="{% url 'load_sentiment_analysis' name %}" style="z-index: 20">
+            <a class="nav-link active" href="{% url 'bot' name %}" style="z-index: 20">
                 <div class="card card-profile shadow">
                     <button id="sentiment-analysis" class="form-control form-control-alternative">Sentiment
                         Analysis</button>
@@ -163,9 +163,8 @@
                         </div>
                         <hr class="my-4" />
                         <!-- Graph 1 -->
-                        <h6 class="heading-small text-muted mb-4">Graph Of Last 30 day Prices</h6>
-                        <div class="pl-lg-4">
-                            <canvas id="myChart" style="height:500px;"></canvas>
+                    
+
                             <!-- <div class="row">
                 <div class="card-body">
                     <form>

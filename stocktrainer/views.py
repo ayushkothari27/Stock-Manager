@@ -505,7 +505,7 @@ def load_time_series(request,name,symbol,region):
             dates.append(date)
             open_.append(info['1. open'])
             c += 1
-            if c>1258:
+            if c>=1258:
                 break
 
         #print(dates,open)
