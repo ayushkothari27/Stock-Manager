@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+
+<!-- Header -->
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+  style="min-height: 600px; background-size: cover; background-position: center top;">
+  <!-- Mask -->
+
+  <span class="mask"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+
+  <canvas id="myChart" style="height:500px;"></canvas>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <div class="row">
+
+    <img src="{% static '/assets/img/heatmap.png' %}" width="1000px">
+
+  </div>
+
+</div>
+<!-- Argon Scripts -->
+<!-- Core -->
+<script src="{% static "/assets/vendor/jquery/dist/jquery.min.js" %}"></script>
+<script src="{% static "/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
+<script src="{% static "/assets/js/argon.js" %}"></script>
+
+<script>
+    var x = {{ dates|safe }}
+    var y = {{ value|safe }}
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ dates|safe }},
+            datasets: [{
+                label: 'Google Trends',
+                data: {{ value|safe }},
+        backgroundColor: [
+            //'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 255, 255, 0.2)',
+        ],
+        borderColor: [
+            'rgba(255,99,132,1)',
+        ],
+        borderWidth: 1
+    },
+    ]
+        },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false
+                }
+            }]
+        },
+    }
+    });
+</script>
+{% endblock %}

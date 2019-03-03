@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as django_logout
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
@@ -34,6 +33,9 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')
 sid = SentimentIntensityAnalyzer()
 
+
+from pytrends.request import TrendReq
+pytrends = TrendReq(hl='en-US', tz=360)
 # Create your views here.
 
 
@@ -93,14 +95,21 @@ def crypto(request):
         crypto_stocks=Crypto.objects.filter(name__startswith=filter)
     return render(request,'stock/crypto.html',{'crypto_stocks':crypto_stocks})
 
+
+
 @login_required(login_url='/login/')
 def index_page(request):
     # Recombee results
-
+    xyz = client.send(RecommendItemsToUser(request.user.id, 5))
+    print(xyz)
+    all_stocks = []
+    for i, value in enumerate(d['id'] for d in xyz):
+        stock = Stock.objects.get(name=value)
+        all_stocks.append(stock)
     # Kushal's code
 
     # Will be replaced by above
-    all_stocks = Stock.objects.all()
+
 
     name = []
     symbol = []
@@ -304,8 +313,23 @@ def detail(request, name, symbol, region):
     print(request.method * 100)
     if request.method=='POST' and 'add' in request.POST:
         if request.user.is_authenticated():
-            stock.save()
-            stock = Stock(name = name, symbol = symbol, region = region, price = current_price)
+            stock = Stock.objects.filter(symbol = symbol)
+            if len(stock)==0:
+                stock = Stock(name = name, symbol = symbol, region = region, price = current_price)
+                stock.save()
+                reqs= []
+                reqs.append(SetItemValues(
+                    name, #itemId
+                    #values:
+                    {
+                      'range': current_price,
+                      'region': region
+                    },
+                cascade_create=True))   # Use cascadeCreate for creating item with given itemId if it doesn't exist
+
+                client.send(Batch(reqs))
+            else:
+                stock = stock[0]
             watch = Watch(user=request.user, stock=stock)
             watch.save()
             message="Added To WatchList"
@@ -480,10 +504,7 @@ def load_time_series(request,name,symbol):
             if c>1258:
                 break
 
-
         #print(dates,open)
-
-
 
         open_ = list(reversed(open_))
         training_data = np.array(open_).reshape((-1,1))
@@ -634,9 +655,8 @@ def recombee_user(request):  #recombee user create
     client.send(Batch(requests))
 
 def data_from_recombee(request):
-    xyz = client.send(RecommendItemsToUser(2, 2))
+    xyz = client.send(RecommendItemsToUser(2, 2))['recomms']
     print(xyz)
-
 
 def bot(request,name):
     print("Hi")
@@ -745,3 +765,17 @@ class listener(StreamListener):
     def on_error(self, status_code):
         if status_code == 420:
             return False
+
+
+def google_trends(request,name):
+    kw_list = [name]
+    xyz = pytrends.get_historical_interest(kw_list, year_start=2019, month_start=1, day_start=1, hour_start=0, year_end=2019, month_end=2, day_end=1, hour_end=0, cat=0, geo='', gprop='', sleep=0)
+    value = xyz.ix[:,0]
+    value = value.tolist()
+    print(value)
+    date = xyz.index
+    dates = []
+    for time in date:
+        dates.append(time.strftime("%Y-%m-%d %H:%M:%S"))
+    print(dates)
+    return render(request, 'stock/google_trends.html', {'value':value,'dates':dates})
