@@ -552,6 +552,9 @@ def logout(request):
     django_logout(request)
     return redirect('/login')
 
+def chatbot(request):
+    return render(request, 'stock/chatbot.html')
+
 @login_required(login_url='/login/')
 def profile(request, user_id):
    user = get_object_or_404(User, pk=user_id)

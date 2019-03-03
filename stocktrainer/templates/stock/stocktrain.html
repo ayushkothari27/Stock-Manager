@@ -1,34 +1,137 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block content %}
+<!-- Header -->
+<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!-- Card stats -->
+            <div class="row">
+                <div class="col-xl-3 col-lg-6">
+                    <div class="card card-stats mb-4 mb-xl-0">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">Dow Jones</h5>
+                                    <span class="h2 font-weight-bold mb-0">26,026.32</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-muted text-sm">
+                                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i>110.32</span>
+                                <span class="text-nowrap">(0.43%)</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6">
+                    <div class="card card-stats mb-4 mb-xl-0">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">Russell 1000 Index</h5>
+                                    <span class="h2 font-weight-bold mb-0">1,556.14</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-muted text-sm">
+                                <span class="text-success mr-2"><i class="fas fa-arrow-up"></i>10.42</span>
+                                <span class="text-nowrap">(0.67%)</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6">
+                    <div class="card card-stats mb-4 mb-xl-0">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">NYSE Amex Index</h5>
+                                    <span class="h2 font-weight-bold mb-0">2,481.33</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-muted text-sm">
+                                <span class="text-warning mr-2"><i class="fas fa-arrow-down"></i>15.22</span>
+                                <span class="text-nowrap">(0.61%)</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6">
+                    <div class="card card-stats mb-4 mb-xl-0">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">BSE SENSEX</h5>
+                                    <span class="h2 font-weight-bold mb-0">36,063.81</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-muted text-sm">
+                                <span class="text-success mr-2"><i class="fas fa-arrow-up"></i>196.37</span>
+                                <span class="text-nowrap">(0.55%)</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div class="col-md-12">
-        <!-- <div class="form-group">
+<div class="container-fluid mt--7">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-transparent">
+                    <h6 class="heading text-muted mb-4">Mock Stocks</h6>
+                    <!-- <div class="form-group">
               <label class="form-control-label" for="input-address">Address</label>
               <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
             </div>-->
-        <table class="table table-bordered table-hover table-sm">
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Stock Name</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Price</th>
-              <th scope="col">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for stock in bs %}
-            <tr>
-              <th scope="row">{{stock.id}}</th>
-              <td>{{stock.stock}}</td>
-              <td>{{stock.quantity}}</td>
-              <td>{{stock.price}}</td>
-              <td>{{stock.added_on}}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+                    <table class="table table-bordered table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Stock Name</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stock in bs %}
+                            <tr>
+                                <th scope="row">{{stock.id}}</th>
+                                <td>{{stock.stock}}</td>
+                                <td>{{stock.quantity}}</td>
+                                <td>{{stock.price}}</td>
+                                <td>{{stock.added_on}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-{% endblock %}
+    {% endblock %}
