@@ -69,27 +69,62 @@
                   <i class="ni location_pin mr-2"></i>Bucharest, Romania
                 </div> -->
                         <div class="h5 mt-4">
-                            <i class="ni business_briefcase-24 mr-2"></i>{{stock.name}}, <span
-                                class="font-weight-light">{{stock.symbol}}</span>
+                            <i class="ni business_briefcase-24 mr-2"></i>{{name}}, <span
+                                class="font-weight-light">{{symbol}}</span>
                         </div>
+
                         <!-- <div>
                   <i class="ni education_hat mr-2"></i>University of Computer Science
                 </div> -->
                         <hr class="my-4" />
                         <p>Buy and sell virtual stocks in real time and train yourself to become a master at stock
                             trading.</p>
+
+                        <form method='POST'>
+                            {% csrf_token %}
+                            <div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="bquantity"
+                                        placeholder="Enter total Number Of Stocks to Buy:"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit"
+                                            name="buytemp">Buy</button>
+                                    </div>
+                                </div>
+                            </div>
+                            </br>
+                        </form>
+                        <form method='POST'>
+                            {% csrf_token %}
+                            <div>
+                                <div class="input-group">
+                                    <input type="text" name="squantity" class="form-control"
+                                        placeholder="Enter total Number Of Stocks to Sell:"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit"
+                                            name="selltemp">Sell</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        {{message}}
+                        <br />
+
                         <a href="#">Manage other virtual stocks</a>
                     </div>
                 </div>
             </div>
             <br />
-            <a class="nav-link active" href="{% url 'load_time_series' name symbol region %}" style="z-index: 20">
-                <div class="card card-profile shadow">
+
+            <div class="card card-profile shadow">
+                <a class="nav-link active" href="{% url 'load_time_series' name symbol region %}" style="z-index: 20">
                     <button id="time-series" class="form-control form-control-alternative">Time Series Analysis</button>
-                </div>
-            </a>
+                </a>
+            </div>
             <br />
-            <a class="nav-link active" href="{% url 'load_sentiment_analysis' name %}" style="z-index: 20">
+            <a class="nav-link active" href="#" style="z-index: 20">
                 <div class="card card-profile shadow">
                     <button id="sentiment-analysis" class="form-control form-control-alternative">Sentiment
                         Analysis</button>
@@ -102,7 +137,7 @@
                 </div>
             </a>
             <br />
-            <a class="nav-link active" href="{% url 'load_sma_ema' symbol %}" style="z-index: 20">
+            <a class="nav-link active" href="#" style="z-index: 20">
                 <div class="card card-profile shadow">
                     <button id="sma-ema" class="form-control form-control-alternative">SMA & EMA Analysis</button>
                 </div>
@@ -287,8 +322,11 @@
                     <div style="width: 600px; margin-left: 50px; background-color: #DDD">
                         <div class="input-group">
                             <input type="text" class="form-control" name="quantity"
-                                placeholder="Enter total Number Of Stocks to Buy:" aria-label="Recipient's username"
+                                placeholder="Enter total Number of Stocks to Buy:" aria-label="Recipient's username"
                                 aria-describedby="basic-addon2">
+                            <input type="text" class="form-control" name="price" style="border-left: solid 1px #bbb"
+                                placeholder="Enter Price of Stocks to Buy:" aria-label="Recipient's username"
+                                aria-describedby="basic-addon3">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="submit" name="buy">Buy</button>
                             </div>
@@ -315,6 +353,9 @@
                             <input type="text" class="form-control" name="squantity"
                                 placeholder="Enter total Number Of Stocks to Sell:" aria-label="Recipient's username"
                                 aria-describedby="basic-addon2">
+                            <input type="text" class="form-control" name="sell_price"
+                                style="border-left: solid 1px #bbb" placeholder="Enter Price of Stocks to Buy:"
+                                aria-label="Recipient's username" aria-describedby="basic-addon3">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="submit" name="sell">Sell</button>
                             </div>

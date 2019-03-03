@@ -46,8 +46,8 @@ class Transaction(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    balance = models.FloatField(default=50000)
-    starting_money = models.FloatField(blank=True, default=0.0)
+    balance = models.FloatField(default=0.0)
+    starting_money = models.FloatField(blank=True, default=50000)
     def __str__(self):
         return self.user.first_name
 
@@ -64,6 +64,16 @@ class Watch(models.Model):
 class Buy(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bentries')
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE, related_name='bstock')
+    quantity = models.IntegerField(default=0)
+    price = models.FloatField()
+    added_on = models.DateField(("Date"), default=datetime.date.today, blank=True)
+
+    def __str__(self):
+        return self.stock.name
+
+class Buyfortrain(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bentries_for_train')
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE, related_name='bstock_for_train')
     quantity = models.IntegerField(default=0)
     price = models.FloatField()
     added_on = models.DateField(("Date"), default=datetime.date.today, blank=True)
