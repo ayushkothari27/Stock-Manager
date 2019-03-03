@@ -163,7 +163,7 @@ def forex_detail(request,forex_id):
         print('Error')
 
     print(open_data)
-    context={'exchange':ex_rate,'open':open_data,'close':close_data,'high':high_data,'low':low_data}
+    context={'exchange':ex_rate,'open':open_data,'close':close_data,'high':high_data,'low':low_data,'name':forex.name,'symbol':forex.symbol}
     return render(request,'stock/forex_detail.html',context=context)
 
 
@@ -604,7 +604,7 @@ def load_time_series(request,name,symbol,region):
     #historical_data = list(historical_data)
     predictions = list(np.ravel(predictions))
     print(predictions,historical_data)
-    context = {'predicitons':predictions,'history':historical_data}
+    context = {'predictions':predictions,'history':historical_data}
     return render(request,'stock/time_series.html',context=context)
 
 class Article():
@@ -620,21 +620,23 @@ class Article():
 
 def forex(request):
 
-
+    curr_set = ['EUR','JPY','GBP','AUD','CAD','CHF','CNY','SEK','NZD','MXN','SGD','HKD','NOK','KRW','TRY','RUB','INR','BRL','ZAR']
     queryset = Forex.objects.all()
-    #currencies = ['RUB','INR','BRL','ZAR']
-    # for curr in currencies:
-    #     response = requests.get('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={0}&to_currency=USD&apikey=22318c0edb3f412fb605062a091e4239'.format(curr))
-    #     #print(dict(response.json()))
-    #     data = dict(response.json())['Realtime Currency Exchange Rate']
-    #     name = data['2. From_Currency Name']
-    #     symbol = data['1. From_Currency Code']
-    #     exchange_rate = data['5. Exchange Rate']
-    #     #print(name,symbol,exchange_rate)
-    #     forex = Forex(name=name,symbol=symbol,exchange_rate=exchange_rate)
-    #     forex.save()
+    currencies = ['SGD']
+    for curr in currencies:
+        response = requests.get('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={0}&to_currency=USD&apikey=22318c0edb3f412fb605062a091e4239'.format(curr))
+        #print(dict(response.json()))
+        data = dict(response.json())['Realtime Currency Exchange Rate']
+        name = data['2. From_Currency Name']
+        symbol = data['1. From_Currency Code']
+        exchange_rate = data['5. Exchange Rate']
+        #print(name,symbol,exchange_rate)
+        forex = Forex(name=name,symbol=symbol,exchange_rate=exchange_rate)
+        forex.save()
     context = {'forex':queryset}
     return render(request,'stock/forex.html',context=context)
+
+
 class WatchlistDeleteView(DeleteView):
     login_url = '/login/'
     model = Watch
@@ -797,25 +799,30 @@ class listener(StreamListener):
             return False
 
 
-def get_sma_ema(request,symbol):
+def get_sma_ema(request,symbol,name):
     interval = 'daily'
     time_period = '20'
-    sma_response = requests.get('https://www.alphavantage.co/query?function=SMA&symbol=MSFT&interval=daily&time_period=20&series_type=open&apikey=63XAFJTFC5HF4OE9')
-    sma_data = dict(response.json())['Technical Analysis (SMA)']
-    ema_response = requests.get('https://www.alphavantage.co/query?function=EMA&symbol=MSFT&interval=daily&time_period=20&series_type=open&apikey=63XAFJTFC5HF4OE9')
-    ema_data = dict(ema_response.json())['Technical Analysis (EMA)']
-    sma_dates = sma_data.keys()
-    ema_dates = ema_data.keys()
+    sma_response = requests.get('https://www.alphavantage.co/query?function=SMA&symbol='+symbol+'&interval=daily&time_period=20&series_type=open&apikey=63XAFJTFC5HF4OE9')
+    #print(sma_response)
+    sma_data = dict(sma_response.json())['Technical Analysis: SMA']
+    ema_response = requests.get('https://www.alphavantage.co/query?function=EMA&symbol='+symbol+'&interval=daily&time_period=20&series_type=open&apikey=63XAFJTFC5HF4OE9')
+    #print(ema_response)
+    ema_data = dict(ema_response.json())['Technical Analysis: EMA']
+    sma_dates = list(sma_data.keys())
+    ema_dates = list(ema_data.keys())
+    #print(sma_dates)
     sma_values = []
     ema_values = []
-
+    print(sma_data[sma_dates[0]]['SMA'])
     for i in range(60):
         sma_values.append(sma_data[sma_dates[i]]['SMA'])
         ema_values.append(ema_data[ema_dates[i]]['EMA'])
 
+    sma_float = [float(x) for x in sma_values]
+    ema_float = [float(x) for x in ema_values]
 
-    print(sma_values,ema_values)
-    context = {'sma_values':sma_values,'ema_values':ema_values}
+    print(sma_float,ema_float)
+    context = {'sma_values':sma_float,'ema_values':ema_float,'symbol':symbol,'name':name}
     return render(request,'stock/sma_ema.html',context=context)
 
 def google_trends(request,name):

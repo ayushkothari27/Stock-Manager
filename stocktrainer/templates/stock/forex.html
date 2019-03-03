@@ -1,10 +1,182 @@
-<<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <p>LOL</p>
-  </body>
-</html>
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+      <!-- Card stats -->
+      <div class="row">
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Bitcoin</h5>
+                  <span class="h2 font-weight-bold mb-0">3,808.52</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                    <i class="fas fa-arrow-down"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-danger mr-2"><i class="fa fa-arrow-up"></i>3.19</span>
+                <span class="text-nowrap">(0.08%)</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Litecoin</h5>
+                  <span class="h2 font-weight-bold mb-0">48.17</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                    <i class="fas fa-arrow-up"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-success mr-2"><i class="fas fa-arrow-up"></i>0.59</span>
+                <span class="text-nowrap">(1.24%)</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Ethereum</h5>
+                  <span class="h2 font-weight-bold mb-0">131.48</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                    <i class="fas fa-arrow-down"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-warning mr-2"><i class="fas fa-arrow-down"></i>3.53</span>
+                <span class="text-nowrap">(2.61%)</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">XRP</h5>
+                  <span class="h2 font-weight-bold mb-0">0.3126</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                    <i class="fas fa-arrow-down"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-danger mr-2"><i class="fas fa-arrow-up"></i>0.0038</span>
+                <span class="text-nowrap">(1.22%)</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div id="heading" class="jumbotron" style="background-color:#fff; margin-bottom: 2px; padding-bottom: 5px">
+      <table>
+        <tr>
+          <td><img src="http://pluspng.com/img-png/stock-market-png-stock-market-png-file-495.png" style="margin: 10px; width: 200px; height: 200px;" /></td>
+          <td style="padding: 20px">
+            <h2 class="display-4" style="color:#004084  "><b>Fortune 500</b> Companies</h2>
+            <p class="lead">This is a simple website where you can watchlist, buy and sell your favourite stocks and
+              get all
+              information about them and earn virtual money based on realtime prices.</p>
+          </td>
+        </tr>
+      </table>
+    </div> -->
+<div id="search"
+  style="width: 100%; height: 80px; background-color:#fff; box-shadow: 0px 5px 10px -4px #333; z-index: 50">
+  <form style="margin-left: 50px; padding: 20px" method='POST'>
+    {% csrf_token %}
+    <!-- <span style="font-size: 20px; margin-right: 20px;">Enter Starting Letters or Name of Company</span> -->
+    <div class='row'>
+      <!-- <div class="col-lg-8 col-md-8"> -->
+      <input type="text" name="filter" class='form-control' style='width: 70%; margin-right: 20px'
+        placeholder="Search for a cryptocurrency here" />
+      <!-- </div> -->
+      <!-- <div class="col-lg-2 col-md-2"> -->
+      <button type="submit" class="btn btn-primary btn-sm" name="search"
+        style="font-size: 20px">Search</button>&nbsp&nbsp
+      <!-- </div> -->
+      <!-- <div class="col-lg-2 col-md-2"> -->
+      <button type="submit" class="btn btn-primary btn-sm" name="refresh" style="font-size: 20px">Refresh</button>
+      <!-- </div> -->
+    </div>
+  </form>
+</div>
+<br />
+<div class="row" style="padding: 30px">
+  {% for curr in forex %}
+  <div class="col-lg-4 col-sm-12" style='margin-bottom: 30px'>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{curr.name}}</h5>
+        <p class="card-text">Code: {{curr.symbol}} <br />
+
+          Exchange Rate: {{curr.exchange_rate}}
+        </p>
+        <a href="{% url 'forex_detail' curr.id %}" class="btn btn-primary">View Details</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<table style="margin-left: 130px; margin-right: 130px">
+  {% for i in all_stocks %}
+  {% if forloop.counter0|divisibleby:2 %}<tr>{% endif %}
+    <td>
+      <div class="list-group" style="margin: 10px">
+        <a href="{% url 'detail' i.pk %}" class="list-group-item list-group-item-action flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1" style="color: #004084"><b>{{i.name}}</b></h5><br />
+            <br />
+            <small><b>Symbol: </b> {{i.symbol}}</small>
+          </div>
+          <p class="mb-1"><b style="color: #004084">Region: </b> {{i.region}}</p>
+        </a>
+      </div>
+    </td>
+    {% if not forloop.counter0|divisibleby:2 %}</tr>{% endif %}
+  {% endfor %}
+</table>
+</div>
+<script>
+  var fixed = false;
+  $(document).scroll(function () {
+    if ($(this).scrollTop() > 378) {
+      if (!fixed) {
+        fixed = true;
+        $('#search').css({ position: 'fixed', top: 0, width: '90%' });
+      }
+    } else {
+      if (fixed) {
+        fixed = false;
+        $('#search').css({ position: 'relative', top: 'auto', width: '100%' });
+      }
+    }
+  });
+</script>
+{% endblock %}
