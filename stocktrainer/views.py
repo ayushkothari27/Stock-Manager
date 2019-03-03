@@ -249,7 +249,10 @@ def crypto_detail(request, crypto_id):
 
 @login_required(login_url='/login/')
 def detail(request, name, symbol, region):
+    print('HIIIIII')
+    print(name,symbol,region)
     cp=requests.get('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+symbol+'&interval=1min&apikey='+fenil_key)
+    print(cp)
     dict_cp=dict(cp.json())
     print(dict_cp)
     dict_cp=dict_cp['Time Series (1min)']
@@ -439,13 +442,13 @@ def news(request):
     #print(headlines)
     return render(request,'stock/news.html',context)
 
-def load_time_series(request,name,symbol):
+def load_time_series(request,name,symbol,region):
 
     stocks = Stock.objects.all()
     symbols = [stock.symbol for stock in stocks]
     if symbol not in symbols:
         stocks = ['WMT','GOOG','T','MSFT','AAPL','BRK.B','FB','JPM','AMZN','BABA']
-        response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=WMT&outputsize=full&apikey=FQFTFEI83XPWMSPQ")
+        response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=XON&outputsize=full&apikey=FQFTFEI83XPWMSPQ")
         data = dict(response.json())
         meta_data = data['Meta Data']
         time_series = data['Time Series (Daily)']
@@ -453,10 +456,10 @@ def load_time_series(request,name,symbol):
         print(symbol)
         c = 0
         dates = []
-        open = []
+        open_ = []
         for date,info in time_series.items():
             dates.append(date)
-            open.append(info['1. open'])
+            open_.append(info['1. open'])
             c += 1
             if c>1258:
                 break
@@ -499,7 +502,7 @@ def load_time_series(request,name,symbol):
         model.add(Dropout(0.2))
         model.add(Dense(units=1))
         model.compile(optimizer='adam',metrics=['accuracy'],loss='mean_squared_error')
-        model.fit(X_train,y_train,epochs=25,batch_size=32)
+        model.fit(X_train,y_train,epochs=3,batch_size=32)
 
 
         file_name = str(symbol)+'.h5'
@@ -519,23 +522,49 @@ def load_time_series(request,name,symbol):
 
         predictions = model.predict(X_test)
         predictions = scaler.inverse_transform(predictions)
-        print(predictions)
+        #print(predictions)
 
 
         historical_data = np.array(open_[-240:],dtype=np.float32)
         price = open_[-1]
-        stock = Stock(name=name,symbol=symbol,prediction=predictions,history=historical_data,price=price)
+        # print(type(predictions))
+        # print(type(historical_data))
+        pred = [i[0] for i in predictions]
+        predictions = str(pred)
+
+        historical_data = str(list(historical_data))
+        print(predictions)
+        print(historical_data)
+        stock = Stock(name=name,symbol=symbol,prediction=predictions,history=historical_data,price=price,region=region)
         stock.save()
     else:
-        stock = Stock.objects.filter(symbol=symbol)
-
+        stock = Stock.objects.filter(symbol=symbol)[0]
+        print(stock)
     name = stock.name
     symbol = stock.symbol
     predictions = stock.prediction
     historical_data = stock.history
     price = stock.price
-
-    return render(request,'forex.html')
+    print(type(predictions))
+    print(historical_data)
+    #pred = predictions[6:-15]
+    #print(predictions)
+    predictions = eval(predictions)
+    print(predictions)
+    print(type(predictions))
+    #hist = historical_data[6:-15]
+    #print(hist)
+    historical_data = eval(historical_data)
+    print(historical_data)
+    #predictions = np.array(predictions)
+    #historical_data = np.array(historical_data)
+    print(type(historical_data))
+    print(type(predictions))
+    #historical_data = list(historical_data)
+    predictions = list(np.ravel(predictions))
+    print(predictions,historical_data)
+    context = {'predicitons':predictions,'history':historical_data}
+    return render(request,'stock/forex.html',context=context)
 
 class Article():
     def __init__(self,title,description,url,image_url):
@@ -726,3 +755,25 @@ class listener(StreamListener):
     def on_error(self, status_code):
         if status_code == 420:
             return False
+
+
+def get_sma_ema(request,symbol):
+    interval = 'daily'
+    time_period = '20'
+    sma_response = requests.get('https://www.alphavantage.co/query?function=SMA&symbol=MSFT&interval=daily&time_period=20&series_type=open&apikey=63XAFJTFC5HF4OE9')
+    sma_data = dict(response.json())['Technical Analysis (SMA)']
+    ema_response = requests.get('https://www.alphavantage.co/query?function=EMA&symbol=MSFT&interval=daily&time_period=20&series_type=open&apikey=63XAFJTFC5HF4OE9')
+    ema_data = dict(ema_response.json())['Technical Analysis (EMA)']
+    sma_dates = sma_data.keys()
+    ema_dates = ema_data.keys()
+    sma_values = []
+    ema_values = []
+
+    for i in range(60):
+        sma_values.append(sma_data[sma_dates[i]]['SMA'])
+        ema_values.append(ema_data[ema_dates[i]]['EMA'])
+
+
+    print(sma_values,ema_values)
+    context = {'sma_values':sma_values,'ema_values':ema_values}
+    return render(request,'stock/sma_ema.html',context=context)
