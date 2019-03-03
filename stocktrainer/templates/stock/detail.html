@@ -10,12 +10,12 @@
     <!-- Header container -->
     <div class="container-fluid d-flex align-items-center">
         <div class="row">
-          <div class="col-lg-12 col-md-10">
-            <h1 class="display-2 text-white">{{name}}</h1>
-            <h3 class="display-4 text-white">{{symbol}}</h3>
-            <p class="text-white mt-0 mb-5"><br> {{symbol}}<br>{{region}}</p>
-            <a href="#!" class="btn btn-info">{{current_price}}</a>
-          </div>
+            <div class="col-lg-12 col-md-10">
+                <h1 class="display-2 text-white">{{name}}</h1>
+                <h3 class="display-4 text-white">{{symbol}}</h3>
+                <p class="text-white mt-0 mb-5"><br> {{symbol}}<br>{{region}}</p>
+                <a href="#!" class="btn btn-info">{{current_price}}</a>
+            </div>
         </div>
     </div>
 </div>
@@ -82,6 +82,31 @@
                     </div>
                 </div>
             </div>
+            <br />
+            <a class="nav-link active" href="{% url 'load_time_series' name symbol region %}" style="z-index: 20">
+                <div class="card card-profile shadow">
+                    <button id="time-series" class="form-control form-control-alternative">Time Series Analysis</button>
+                </div>
+            </a>
+            <br />
+            <a class="nav-link active" href="{% url 'load_sentiment_analysis' name %}" style="z-index: 20">
+                <div class="card card-profile shadow">
+                    <button id="sentiment-analysis" class="form-control form-control-alternative">Sentiment
+                        Analysis</button>
+                </div>
+            </a>
+            <br />
+            <a class="nav-link active" href="{% url 'google_trends' name %}" style="z-index: 20">
+                <div class="card card-profile shadow">
+                    <button id="google-trends" class="form-control form-control-alternative">Google Trends</button>
+                </div>
+            </a>
+            <br />
+            <a class="nav-link active" href="{% url 'load_sma_ema' symbol %}" style="z-index: 20">
+                <div class="card card-profile shadow">
+                    <button id="sma-ema" class="form-control form-control-alternative">SMA & EMA Analysis</button>
+                </div>
+            </a>
         </div>
         <div class="col-xl-8 order-xl-1">
             <div class="card bg-secondary shadow">
@@ -95,49 +120,53 @@
                 </div>
               </div>
             </div> -->
-            <div class="card-body">
-              <form>
-                <h6 class="heading-small text-muted mb-4">Stock information</h6>
-                <div class="pl-lg-4">
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-username">Last Day Low</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative"
-                        placeholder="{{last_day_low}}" value="{{last_day_low}}" disabled>
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-email">Last Day High</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative"
-                        placeholder="{{last_day_high}}" value="{{last_day_high}}" disabled>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">Last Day Open</label>
-                        <input type="text" id="input-first-name" class="form-control form-control-alternative"
-                        placeholder="{{last_day_open}}" value="{{last_day_open}}" disabled>
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Last Day Close</label>
-                        <input type="text" id="input-last-name" class="form-control form-control-alternative"
-                        placeholder="{{last_day_close}}" value="{{last_day_close}}" disabled>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <hr class="my-4" />
-                <!-- Graph 1 -->
-                <h6 class="heading-small text-muted mb-4">Graph Of Last 30 day Prices</h6>
-                <div class="pl-lg-4">
-                  <canvas id="myChart" style="height:500px;"></canvas>
-                  <!-- <div class="row">
+                <div class="card-body">
+                    <form>
+                        <h6 class="heading-small text-muted mb-4">Stock information</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-username">Last Day Low</label>
+                                        <input type="text" id="input-username"
+                                            class="form-control form-control-alternative" placeholder="{{last_day_low}}"
+                                            value="{{last_day_low}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-email">Last Day High</label>
+                                        <input type="email" id="input-email"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{last_day_high}}" value="{{last_day_high}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-first-name">Last Day Open</label>
+                                        <input type="text" id="input-first-name"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{last_day_open}}" value="{{last_day_open}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-last-name">Last Day Close</label>
+                                        <input type="text" id="input-last-name"
+                                            class="form-control form-control-alternative"
+                                            placeholder="{{last_day_close}}" value="{{last_day_close}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4" />
+                        <!-- Graph 1 -->
+                        <h6 class="heading-small text-muted mb-4">Graph Of Last 30 day Prices</h6>
+                        <div class="pl-lg-4">
+                            <canvas id="myChart" style="height:500px;"></canvas>
+                            <!-- <div class="row">
                 <div class="card-body">
                     <form>
                         <h6 class="heading-small text-muted mb-4">Stock information</h6>
@@ -187,10 +216,10 @@
                         </div>
                         <hr class="my-4" />
                         <!-- Graph 1 -->
-                        <h6 class="heading-small text-muted mb-4">Graph Of Last 30 day Prices</h6>
-                        <div class="pl-lg-4">
-                            <canvas id="myChart" style="height:500px;"></canvas>
-                            <!-- <div class="row">
+                            <h6 class="heading-small text-muted mb-4">Graph Of Last 30 day Prices</h6>
+                            <div class="pl-lg-4">
+                                <canvas id="myChart" style="height:500px;"></canvas>
+                                <!-- <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
                         <label class="form-control-label" for="input-address">Address</label>
@@ -218,20 +247,20 @@
                       </div>
                     </div>
                   </div>-->
-                        </div>
-                        <hr class="my-4" />
-                        <!-- Graph 2 -->
-                        <h6 class="heading-small text-muted mb-4">Graph Of Last Minute Prices</h6>
-                        <div class="pl-lg-4">
-                            <canvas id="myChart3" style="height:500px;"></canvas>
-                        </div>
-                        <hr class="my-4" />
-                        <!-- Graph 3 -->
-                        <h6 class="heading-small text-muted mb-4">Graph Of Volume in Last 30 Days</h6>
-                        <div class="pl-lg-4">
-                            <canvas id="myChart2" style="height:500px;"></canvas>
-                        </div>
-                        <!-- <hr class="my-4" />
+                            </div>
+                            <hr class="my-4" />
+                            <!-- Graph 2 -->
+                            <h6 class="heading-small text-muted mb-4">Graph Of Last Minute Prices</h6>
+                            <div class="pl-lg-4">
+                                <canvas id="myChart3" style="height:500px;"></canvas>
+                            </div>
+                            <hr class="my-4" />
+                            <!-- Graph 3 -->
+                            <h6 class="heading-small text-muted mb-4">Graph Of Volume in Last 30 Days</h6>
+                            <div class="pl-lg-4">
+                                <canvas id="myChart2" style="height:500px;"></canvas>
+                            </div>
+                            <!-- <hr class="my-4" />
                 <h6 class="heading-small text-muted mb-4">About me</h6>
                 <div class="pl-lg-4">
                   <div class="form-group">
@@ -239,65 +268,65 @@
                     <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
                   </div>
                 </div> -->
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--Modals-->
-      <div class="modal fade" id="buyModal" role="dialog">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Buy Stocks</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-
-                    <form method='POST' action="{% url 'detail' name symbol region %}">
-                        {% csrf_token %}
-                        <div style="width: 600px; margin-left: 50px; background-color: #DDD">
-                          <div class="input-group">
-                            <input type="text" class="form-control" name="quantity"
-                            placeholder="Enter total Number Of Stocks to Buy:" aria-label="Recipient's username"
-                            aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                              <button class="btn btn-outline-secondary" type="submit" name="buy">Buy</button>
-                            </div>
-                          </div>
-                        </div>
-                        <br/>
-                        <br/>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="sellModal" role="dialog">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Sell Stocks</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <form method='POST' action="{% url 'detail' name symbol region %}">
-                        {% csrf_token %}
-                        <div style="width: 600px; margin-left: 50px; background-color: #DDD">
-                          <div class="input-group">
-                            <input type="text" class="form-control" name="squantity"
-                            placeholder="Enter total Number Of Stocks to Sell:" aria-label="Recipient's username"
-                            aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                              <button class="btn btn-outline-secondary" type="submit" name="sell">Sell</button>
-                            </div>
-                          </div>
-                        </div>
-                        <br/>
-                        <br/>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <!--Modals-->
+    <div class="modal fade" id="buyModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Buy Stocks</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <form method='POST' action="{% url 'detail' name symbol region %}">
+                    {% csrf_token %}
+                    <div style="width: 600px; margin-left: 50px; background-color: #DDD">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="quantity"
+                                placeholder="Enter total Number Of Stocks to Buy:" aria-label="Recipient's username"
+                                aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit" name="buy">Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="sellModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Sell Stocks</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form method='POST' action="{% url 'detail' name symbol region %}">
+                    {% csrf_token %}
+                    <div style="width: 600px; margin-left: 50px; background-color: #DDD">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="squantity"
+                                placeholder="Enter total Number Of Stocks to Sell:" aria-label="Recipient's username"
+                                aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit" name="sell">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 <!-- Argon Scripts -->
 <!-- Core -->
