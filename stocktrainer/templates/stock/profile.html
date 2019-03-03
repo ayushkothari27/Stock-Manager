@@ -19,7 +19,10 @@
         <h1 class="display-2 text-white">{{user.username}}</h1>
         <h3 class="display-4 text-white">Investor | Trader | Expert</h3>
         <!-- <p class="text-white mt-0 mb-5"><a href="{{stock.website}}">{{stock.website}}</a> {{stock.industry}} {{stock.sector}}</p> -->
-        <a href="#!" class="btn btn-info">Balance: {{cb}}</a>
+        <br/>
+        <a href="#!" class="btn btn-info">Virtual Balance: {{profile.balance}}</a>
+        <br/><br/>
+        <a href="#!" class="btn btn-primary">Balance: {{profile.starting_money}}</a>
       </div>
     </div>
   </div>
@@ -140,8 +143,41 @@
                 </div>
                 <hr class="my-4" /> -->
             <!-- Graph 1 -->
+            <h6 class="heading-small text-muted mb-4">Transactional History</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-md-12">
+                  <!-- <div class="form-group">
+                        <label class="form-control-label" for="input-address">Address</label>
+                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
+                      </div>-->
+                  <table class="table table-bordered table-hover table-sm">
+                    <thead>
+                      <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for stock in history %}
+                      <tr>
+                        <th scope="row">{{stock.id}}</th>
+                        <td>{{stock.type}}</td>
+                        <td>{{stock.name}}</td>
+                        <td>{{stock.quantity}}</td>
+                        <td>{{stock.price}}</td>
+                        <td>{{stock.date}}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
 
-          
+
             <h6 class="heading-small text-muted mb-4">Bought Items</h6>
             <div class="pl-lg-4">
               <div class="row">
