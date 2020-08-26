@@ -1,4 +1,4 @@
-absl-py==0.7.0
+absl-py==0.7
 astor==0.7.1
 certifi==2018.11.29
 chardet==3.0.4
